@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".faculty.activities.AddNewReportActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/settings_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/settingbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#2F80ED"
+                app:title=" " />
+
+            <TextView
+                android:id="@+id/settingTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/ubuntu_regular"
+                android:text="Add New Report"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/settings_bar"
+        android:background="#836A6969" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/divider"
+        android:layout_margin="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/llHeader"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/llHeader"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvDateTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:layout_weight="0.7"
+                    android:fontFamily="@font/nunito_regular"
+                    android:padding="4dp"
+                    android:text="Date "
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:layout_weight="0.3"
+                    android:fontFamily="@font/nunito_regular"
+                    android:gravity="end"
+                    android:padding="4dp"
+                    android:text="21-06-2021 as:as;as"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/monthInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:layout_marginTop="12dp"
+                android:background="#fff"
+                android:hint="Report Month"
+                android:textColorHint="#80000000"
+                app:boxStrokeColor="@color/latestBlue"
+                app:errorEnabled="true"
+                app:hintTextColor="@color/latestBlue">
+
+                <AutoCompleteTextView
+                    android:id="@+id/monthAutoComTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="none"
+                    android:maxLines="1"
+                    android:text="Select" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/yearInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:layout_marginTop="12dp"
+                android:background="#fff"
+                android:hint="Report Year"
+                android:textColorHint="#80000000"
+                app:boxStrokeColor="@color/latestBlue"
+                app:errorEnabled="true"
+                app:hintTextColor="@color/latestBlue">
+
+                <AutoCompleteTextView
+                    android:id="@+id/yearAutoComTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="none"
+                    android:maxLines="1"
+                    android:text="Select" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/programInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:layout_marginTop="12dp"
+                android:background="#fff"
+                android:hint="Report program"
+                android:textColorHint="#80000000"
+                app:boxStrokeColor="@color/latestBlue"
+                app:errorEnabled="true"
+                app:hintTextColor="@color/latestBlue">
+
+                <AutoCompleteTextView
+                    android:id="@+id/programAutoComTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="none"
+                    android:text="Select" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/coordinatorInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:layout_marginTop="12dp"
+                android:background="#fff"
+                android:hint="Coordinator"
+                android:textColorHint="#80000000"
+                app:boxStrokeColor="@color/latestBlue"
+                app:errorEnabled="true"
+                app:hintTextColor="@color/latestBlue">
+
+                <AutoCompleteTextView
+                    android:id="@+id/coordinatorAutoComTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="none"
+                    android:text="Select" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/supInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:layout_marginTop="12dp"
+                android:background="#fff"
+                android:hint="Superintendent"
+                android:textColorHint="#80000000"
+                app:boxStrokeColor="@color/latestBlue"
+                app:errorEnabled="true"
+                app:hintTextColor="@color/latestBlue">
+
+                <AutoCompleteTextView
+                    android:id="@+id/supAutoComTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="none"
+                    android:text="Select" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/leaveInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="#fff"
+                android:hint="Leaves Taken"
+                android:textColorHint="#80000000"
+                app:boxStrokeColor="@color/latestBlue"
+                app:errorEnabled="true"
+                app:hintTextColor="@color/latestBlue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/leaveEd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#50ffffff"
+                    android:inputType="textCapSentences"
+                    android:maxLength="2"
+                    android:maxLines="1"
+                    android:textColor="#000" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/createBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:padding="8dp"
+                android:text="Create Report" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>

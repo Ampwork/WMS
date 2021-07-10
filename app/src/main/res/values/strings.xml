@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">WMS</string>
+    <string name="default_notification_channel_id">app_channel_id</string>
+
+    <string name="email_error_txt">Enter valid email id</string>
+
+    <string name="phone_error_txt">Enter 10 digit phone number</string>
+    <string name="about_error_txt">Enter few lines about you</string>
+    <string name="password_error_txt">Enter minimum 6 character</string>
+    <string name="date_error_txt">Please select date</string>
+    <string name="subject_error_txt">Please select subject</string>
+    <string name="type_error_txt">Please select type</string>
+    <string name="from_error_txt">Select from time</string>
+    <string name="to_error_txt">Select to time</string>
+    <string name="desc_error_txt">Enter description</string>
+    <string name="sem_error_txt">Select valid semester</string>
+    <string name="program_error_txt">Select Report program</string>
+    <string name="coordinator_error_txt">Select Coordinator</string>
+    <string name="sup_error_txt">Select Superintendent</string>
+    <string name="year_error_txt">Select Report year</string>
+    <string name="month_error_txt">Select Report month</string>
+    <string name="status_error_txt">Select Report status</string>
+    <string name="name_error_txt">Enter valid name</string>
+    <string name="usn_error_txt">Enter valid usn</string>
+    <string name="gender_error_txt">Select gender</string>
+    <string name="dob_error_txt">Enter DOB</string>
+    <string name="address_error_txt">Enter address</string>
+    <string name="perc_error_txt">Enter subject percentage</string>
+    <string name="view_report_in_excel"><u><b>View report in excel</b></u></string>
+
+
+</resources>

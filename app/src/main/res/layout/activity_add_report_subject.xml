@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_gravity="center"
+    tools:context=".faculty.activities.AddReportSubjectActivity">
+
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_main" />
+
+
+    <TextView
+        android:id="@+id/tvReportTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:fontFamily="@font/nunito_regular"
+        android:padding="4dp"
+        android:text="Report Id"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <TextView
+        android:id="@+id/tvReportId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:fontFamily="@font/nunito_regular"
+        android:padding="4dp"
+        android:text=""
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/subjectInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
+        android:background="#fff"
+        android:hint="Subject"
+        android:padding="4dp"
+        android:textColorHint="#80000000"
+        app:boxStrokeColor="@color/latestBlue"
+        app:errorEnabled="true"
+        app:hintTextColor="@color/latestBlue"
+        app:layout_constraintTop_toBottomOf="@id/tvReportTitle">
+
+
+        <AutoCompleteTextView
+            android:id="@+id/SubjectAutoComTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="none"
+
+            android:text="Select" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/percInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
+        android:background="#fff"
+        android:padding="4dp"
+        android:hint="Subject percentage"
+        android:textColorHint="#80000000"
+        app:boxStrokeColor="@color/latestBlue"
+        app:errorEnabled="true"
+        app:hintTextColor="@color/latestBlue"
+        app:layout_constraintTop_toBottomOf="@id/subjectInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/percEd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#50ffffff"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:textColor="#000" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/descInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
+        android:background="#fff"
+        android:padding="4dp"
+        android:hint="Description"
+        android:textColorHint="#80000000"
+        app:boxStrokeColor="@color/latestBlue"
+        app:errorEnabled="true"
+        app:hintTextColor="@color/latestBlue"
+        app:layout_constraintTop_toBottomOf="@id/percInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/descEd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#50ffffff"
+            android:inputType="number"
+            android:maxLines="1"
+            android:textColor="#000" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
+        android:padding="8dp"
+        android:text="Submit"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/descInputLayout" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "896482865048",
+    "project_id": "work-management-system-1f410",
+    "storage_bucket": "work-management-system-1f410.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:896482865048:android:65648e801d05a13cb6c5ed",
+        "android_client_info": {
+          "package_name": "com.ampwork.workdonereportmanagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "896482865048-pp2453gvgu4vckgh6fsokhek28eabm76.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaH_Lw7MZI0glWYKBWFPqOK1qcxlCGzGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "896482865048-pp2453gvgu4vckgh6fsokhek28eabm76.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
