@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".clerk.activities.faculty.AddSubjectActivity">
+
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_main" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/subjectInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="12dp"
+        android:layout_weight="1"
+        android:background="#fff"
+        android:gravity="center"
+        android:hint="Subject name"
+        android:textColorHint="#80000000"
+        app:boxStrokeColor="@color/latestBlue"
+        app:errorEnabled="true"
+        app:hintTextColor="@color/latestBlue"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/subjectEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:inputType="textCapSentences" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/subjectCodeInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="12dp"
+        android:layout_weight="1"
+        android:background="#fff"
+        android:gravity="center"
+        android:hint="Subject code"
+        android:textColorHint="#80000000"
+        app:boxStrokeColor="@color/latestBlue"
+        app:errorEnabled="true"
+        app:hintTextColor="@color/latestBlue"
+        app:layout_constraintTop_toBottomOf="@id/subjectInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/subjectCodeEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="textCapSentences" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/programInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:layout_marginTop="12dp"
+        android:background="#fff"
+        android:hint="program"
+        android:textColorHint="#80000000"
+        app:boxStrokeColor="@color/latestBlue"
+        app:errorEnabled="true"
+        app:hintTextColor="@color/latestBlue"
+        app:layout_constraintTop_toBottomOf="@+id/subjectCodeInputLayout">
+
+        <AutoCompleteTextView
+            android:id="@+id/programAutoComTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:inputType="none"
+            android:text="Select" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/semesterInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:layout_marginTop="12dp"
+        android:background="#fff"
+        android:hint="Semester"
+        android:textColorHint="#80000000"
+        app:boxStrokeColor="@color/latestBlue"
+        app:errorEnabled="true"
+        app:hintTextColor="@color/latestBlue"
+        app:layout_constraintTop_toBottomOf="@+id/programInputLayout">
+
+        <AutoCompleteTextView
+            android:id="@+id/semAutoComTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:inputType="none"
+            android:text="Select" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/createBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:padding="8dp"
+        android:text="Add subject"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/semesterInputLayout" />
+</androidx.constraintlayout.widget.ConstraintLayout>

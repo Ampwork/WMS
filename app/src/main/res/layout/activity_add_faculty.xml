@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".clerk.activities.faculty.AddFacultyActivity">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar_main" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar"
+            android:scrollbars="none">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/profileImageLayout"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="16dp"
+                    android:layout_gravity="center">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:src="@drawable/user_default_image"
+                        android:id="@+id/profileImage"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:layout_centerInParent="true" />
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:src="@drawable/ic_camera" />
+                </RelativeLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fNameInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:gravity="center"
+                    android:hint="First Name"
+                    android:textColorHint="#80000000"
+                    app:boxStrokeColor="@color/latestBlue"
+                    app:errorEnabled="true"
+                    app:hintTextColor="@color/latestBlue">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/fNameEdt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapSentences"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lNameInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:gravity="center"
+                    android:hint="Last Name"
+                    android:textColorHint="#80000000"
+                    app:boxStrokeColor="@color/latestBlue"
+                    app:errorEnabled="true"
+                    app:hintTextColor="@color/latestBlue">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/lNameEdt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapSentences"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/emailInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:gravity="center"
+                    android:hint="Email"
+                    android:textColorHint="#80000000"
+                    app:boxStrokeColor="@color/latestBlue"
+                    app:errorEnabled="true"
+                    app:hintTextColor="@color/latestBlue">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/emailEd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/phoneInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:gravity="center"
+                    android:hint="Phone"
+                    android:textColorHint="#80000000"
+                    app:boxStrokeColor="@color/latestBlue"
+                    app:errorEnabled="true"
+                    app:hintTextColor="@color/latestBlue">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/phoneEd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="phone"
+                        android:maxLength="10"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/programInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#fff"
+                    android:hint="program"
+                    android:textColorHint="#80000000"
+                    app:boxStrokeColor="@color/latestBlue"
+                    app:errorEnabled="true"
+                    app:hintTextColor="@color/latestBlue">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/programAutoComTv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:text="Select" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/roleInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#fff"
+                    android:hint="Role"
+                    android:textColorHint="#80000000"
+                    app:boxStrokeColor="@color/latestBlue"
+                    app:errorEnabled="true"
+                    app:hintTextColor="@color/latestBlue">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/roleAutoComTv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:text="Select" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/passwordInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#fff"
+                    android:hint="Password"
+                    android:textColorHint="#80000000"
+                    app:boxStrokeColor="@color/latestBlue"
+                    app:errorEnabled="true"
+                    app:hintTextColor="@color/latestBlue"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="#80000000">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/passwordEd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#fff"
+                        android:inputType="textPassword"
+                        android:textColor="#000" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ConfirmPasswordInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#fff"
+                    android:hint="Confirm Password"
+                    android:textColorHint="#80000000"
+                    app:boxStrokeColor="@color/latestBlue"
+                    app:errorEnabled="true"
+                    app:hintTextColor="@color/latestBlue"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="#80000000">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ConfirmPasswordEd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#fff"
+                        android:inputType="textPassword"
+                        android:textColor="#000" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/signBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:visibility="visible"
+                    android:text="Add Faculty Sign" />
+
+                <ImageView
+                    android:id="@+id/signIv"
+                    android:visibility="visible"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="20dp"
+                    android:layout_width="200dp"
+                    android:layout_height="80dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/createBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Create Faculty" />
+
+            </LinearLayout>
+        </ScrollView>
+
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

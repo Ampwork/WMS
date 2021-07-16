@@ -1,54 +1,41 @@
 package com.ampwork.workdonereportmanagement.clerk.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.ampwork.workdonereportmanagement.R;
-import com.ampwork.workdonereportmanagement.clerk.adapter.StudentCountAdapter;
-import com.ampwork.workdonereportmanagement.model.ClerkResponse;
-import com.ampwork.workdonereportmanagement.network.Api;
-import com.ampwork.workdonereportmanagement.network.ApiClient;
+import com.ampwork.workdonereportmanagement.clerk.activities.faculty.FacultyHomeActivity;
+import com.ampwork.workdonereportmanagement.clerk.activities.programs.ProgramsHomeActivity;
+import com.ampwork.workdonereportmanagement.clerk.activities.student.StudentHomeActivity;
 import com.ampwork.workdonereportmanagement.utils.AppConstants;
 import com.ampwork.workdonereportmanagement.utils.PreferencesManager;
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class ClerkHomeActivity extends AppCompatActivity implements StudentCountAdapter.RecycleItemViewClicked {
+public class ClerkHomeActivity extends AppCompatActivity {
 
     TextView tvUserName, tvUserPhone, tvUserEmail;
-    ProgressDialog progressDialog;
+
     CircleImageView profileImageView;
     TextDrawable drawable;
     ImageButton profileButton;
-    RecyclerView recyclerView;
+
 
     PreferencesManager preferencesManager;
-    Api api;
-    FloatingActionButton fabAdd;
-    List<ClerkResponse.ProgramCount> programCounts = new ArrayList<>();
 
-    StudentCountAdapter studentCountAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,23 +43,48 @@ public class ClerkHomeActivity extends AppCompatActivity implements StudentCount
         setContentView(R.layout.activity_clerk_home);
 
         initializeViews();
+        initializeBottomNavigationBar();
         setData();
-        initializeRecyclerView();
+
         initializeClickEvent();
-        getDashboardData();
+
+    }
+
+    private void initializeBottomNavigationBar() {
+        final BottomNavigationView navView = findViewById(R.id.bottomNavigationView);
+
+        navView.getMenu().setGroupCheckable(0, false, true);
+
+        navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.navigation_student) {
+                    Intent studentIntent = new Intent(ClerkHomeActivity.this, StudentHomeActivity.class);
+                    startActivity(studentIntent);
+                } else if (item.getItemId() == R.id.navigation_programs) {
+                    Intent programIntent = new Intent(ClerkHomeActivity.this, ProgramsHomeActivity.class);
+                    startActivity(programIntent);
+                } else if (item.getItemId() == R.id.navigation_faculty) {
+                    Intent facultyIntent = new Intent(ClerkHomeActivity.this, FacultyHomeActivity.class);
+                    startActivity(facultyIntent);
+
+                }
+                return true;
+            }
+        });
     }
 
 
     private void initializeViews() {
         preferencesManager = new PreferencesManager(this);
-        api = ApiClient.getClient().create(Api.class);
+
         tvUserEmail = findViewById(R.id.tvEmailId);
         tvUserName = findViewById(R.id.tvName);
         tvUserPhone = findViewById(R.id.tvPhone);
 
         profileImageView = findViewById(R.id.imageView3);
         profileButton = findViewById(R.id.settings_btn);
-        fabAdd = findViewById(R.id.fab_add);
+
     }
 
 
@@ -115,103 +127,8 @@ public class ClerkHomeActivity extends AppCompatActivity implements StudentCount
                 startActivity(intent);
             }
         });
-        fabAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ClerkHomeActivity.this, AddStudentActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
 
-    private void initializeRecyclerView() {
-        recyclerView = findViewById(R.id.recyclerView);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(llm);
-        recyclerView.setHasFixedSize(true);
     }
 
 
-    private void getDashboardData() {
-        showProgressDialog("Please wait...");
-        Call<ClerkResponse> call = api.getcount();
-        call.enqueue(new Callback<ClerkResponse>() {
-            @Override
-            public void onResponse(Call<ClerkResponse> call, Response<ClerkResponse> response) {
-                int statusCode = response.code();
-                switch (statusCode) {
-                    case 200:
-                        hideProgressDialog();
-                        ClerkResponse clerkResponse = response.body();
-                        String msg = clerkResponse.getMessage();
-                        boolean status = clerkResponse.isStatus();
-                        if (status) {
-                            if (msg.equals("Data Found")) {
-                                programCounts = clerkResponse.getProgramCount();
-
-                                if (programCounts.size() > 0) {
-                                    studentCountAdapter = new StudentCountAdapter(ClerkHomeActivity.this, programCounts,ClerkHomeActivity.this);
-                                    recyclerView.setAdapter(studentCountAdapter);
-                                } else {
-
-                                    Toast.makeText(ClerkHomeActivity.this, "" + msg, Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Toast.makeText(ClerkHomeActivity.this, "" + msg, Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(ClerkHomeActivity.this, "" + msg, Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-
-                    case 500:
-                        hideProgressDialog();
-                        Toast.makeText(ClerkHomeActivity.this, "Server Error", Toast.LENGTH_SHORT).show();
-                        break;
-
-                }
-
-
-            }
-
-            @Override
-            public void onFailure(Call<ClerkResponse> call, Throwable t) {
-                hideProgressDialog();
-                Toast.makeText(ClerkHomeActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getDashboardData();
-    }
-
-
-    private void showProgressDialog(String msg) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(ClerkHomeActivity.this);
-            progressDialog.setIndeterminate(true);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(msg);
-            progressDialog.show();
-        } else {
-            progressDialog.show();
-        }
-    }
-
-    private void hideProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onItemViewSelected(ClerkResponse.ProgramCount programCount) {
-
-        Intent intent = new Intent(ClerkHomeActivity.this,DepartmentWiseStudentDetailsActivity.class);
-        intent.putExtra("program",programCount.getProgram());
-        startActivity(intent);
-    }
 }

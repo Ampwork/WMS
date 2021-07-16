@@ -1,4 +1,4 @@
-package com.ampwork.workdonereportmanagement.clerk.activities;
+package com.ampwork.workdonereportmanagement.clerk.activities.student;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -204,7 +206,7 @@ public class DepartmentWiseStudentDetailsActivity extends AppCompatActivity impl
 
     @Override
     public void onItemViewSelected(StudentDetailsModel detailsModel) {
-        Intent intent = new Intent(DepartmentWiseStudentDetailsActivity.this,AddStudentActivity.class);
+        Intent intent = new Intent(DepartmentWiseStudentDetailsActivity.this, AddStudentActivity.class);
         intent.putExtra("studentData", (Parcelable) detailsModel);
         startActivity(intent);
     }
@@ -213,5 +215,14 @@ public class DepartmentWiseStudentDetailsActivity extends AppCompatActivity impl
     protected void onResume() {
         super.onResume();
         getStudentsDetails();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class AddReportModel implements Parcelable {
 
     @SerializedName("id")
@@ -45,6 +47,8 @@ public class AddReportModel implements Parcelable {
 
     @SerializedName("total_absent")
     private String total_absent;
+
+
 
     public AddReportModel(String date, String day, String type, String semester, String from_time,
                           String to_time, String no_of_hours, String description, String reportid,
@@ -203,4 +207,6 @@ public class AddReportModel implements Parcelable {
                 ", total_absent='" + total_absent + '\'' +
                 '}';
     }
+
+
 }

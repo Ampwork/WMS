@@ -1,7 +1,8 @@
 package com.ampwork.workdonereportmanagement.faculty.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -9,17 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.AutoTransition;
-import androidx.transition.TransitionManager;
 
 import com.ampwork.workdonereportmanagement.R;
-import com.ampwork.workdonereportmanagement.model.AddReportModel;
+import com.ampwork.workdonereportmanagement.faculty.activities.EditReportAttendanceActivity;
 import com.ampwork.workdonereportmanagement.model.ReportAttendanceModel;
 import com.ampwork.workdonereportmanagement.utils.AppUtility;
 import com.google.android.material.card.MaterialCardView;
@@ -27,7 +25,7 @@ import com.google.android.material.card.MaterialCardView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttendanceReportAdapter extends RecyclerView.Adapter<AttendanceReportAdapter.ViewHolder> {
+public class AttendanceReportChildAdapter extends RecyclerView.Adapter<AttendanceReportChildAdapter.ViewHolder> {
 
     private Context context;
     private List<ReportAttendanceModel> reportModels = new ArrayList<>();
@@ -40,8 +38,8 @@ public class AttendanceReportAdapter extends RecyclerView.Adapter<AttendanceRepo
         public void onItemViewSelected(ReportAttendanceModel addReportModel);
     }
 
-    public AttendanceReportAdapter(Context context, List<ReportAttendanceModel> reportModels,
-                              RecycleItemViewClicked itemViewClicked, String status) {
+    public AttendanceReportChildAdapter(Context context, List<ReportAttendanceModel> reportModels,
+                                        RecycleItemViewClicked itemViewClicked, String status) {
         this.context = context;
         this.reportModels = reportModels;
         this.mFilteredList = reportModels;
@@ -49,6 +47,14 @@ public class AttendanceReportAdapter extends RecyclerView.Adapter<AttendanceRepo
         this.status = status;
     }
 
+    public AttendanceReportChildAdapter(Context context,
+                                        List<ReportAttendanceModel> reportModels,
+                                        String status) {
+        this.context = context;
+        this.reportModels = reportModels;
+        this.mFilteredList = reportModels;
+        this.status = status;
+    }
 
     @NonNull
     @Override
@@ -96,7 +102,9 @@ public class AttendanceReportAdapter extends RecyclerView.Adapter<AttendanceRepo
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.update:
-                                itemViewClicked.onItemViewSelected(mFilteredList.get(position));
+                                Intent intent = new Intent(context, EditReportAttendanceActivity.class);
+                                intent.putExtra("data",(Parcelable) mFilteredList.get(position));
+                                context.startActivity(intent);
                                 break;
                         }
                         return true;

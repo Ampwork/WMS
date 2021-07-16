@@ -30,6 +30,7 @@
         android:outlineSpotShadowColor="@color/latestBlue"
         android:padding="8dp"
         app:cardCornerRadius="7dp"
+        android:visibility="gone"
         app:cardElevation="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

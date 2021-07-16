@@ -40,6 +40,8 @@ import com.ampwork.workdonereportmanagement.utils.AppUtility;
 import com.ampwork.workdonereportmanagement.utils.PreferencesManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -61,7 +63,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -82,20 +88,25 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     Api api;
     MonthlyReportAdapter reportAdapter;
-    String userId, semester, subject, fromDate, toDate,month;
-    boolean isMonth = false ;
+    String userId, semester, subject, fromDate, toDate, month;
+    boolean isMonth = false;
 
     PreferencesManager preferenceManager;
 
     GenerateReportResponse.ReportResponseModel reportResponseModel;
     List<AddReportModel> addReportModels;
-
+    List<GenerateReportResponse.WeeksModel> weeksModels;
+    List<GenerateReportResponse.ReportSubject> reportSubjects;
     File filePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/report.xlsx");
 
 
     private static final String[] titles = {
             " Date", "Semester/Work", "From", "To", "T/P/FW/PW", "No. of Hours/Theory Eqv. hours",
             "Description of the work: Paper Code:--- , Content (Topic Covered) and any other assignments/work carried out"};
+
+    private static final String[] paper_titles = {"Paper Code", "Paper Title", "% of Syllabus Covered in this month", "Cumulative Syllbus Covered"};
+
+    int totalDaysOfMonth, totalNumberOfWeeks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,16 +141,26 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
         btnSubmit = findViewById(R.id.submitBtn);
 
         userId = preferenceManager.getStringValue(AppConstants.PREF_ID);
-        isMonth  = getIntent().getExtras().getBoolean("isMonth");
+        isMonth = getIntent().getExtras().getBoolean("isMonth");
         reportResponseModel = getIntent().getParcelableExtra("list");
         addReportModels = reportResponseModel.getAddReportModels();
-        if (isMonth)
-        {
+
+        if (isMonth) {
+
 
             semester = getIntent().getExtras().getString("semester");
             subject = getIntent().getExtras().getString("subject");
             month = getIntent().getExtras().getString("month");
-        }else {
+            reportSubjects = reportResponseModel.getReportSubjects();
+
+            totalDaysOfMonth = AppUtility.checkMonth(month);
+            int value = AppUtility.checkMonthValue(month);
+            int year = Integer.parseInt(reportResponseModel.getYear());
+            totalNumberOfWeeks = AppUtility.getNumberOfWeeks(year, value);
+
+            Log.e("days", "1......." + totalNumberOfWeeks);
+
+        } else {
             semester = getIntent().getExtras().getString("semester");
             subject = getIntent().getExtras().getString("subject");
             fromDate = getIntent().getExtras().getString("fromDate");
@@ -148,8 +169,7 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
 
         if (reportResponseModel.getStatus().equals("Accept") || reportResponseModel.getStatus().equals("Approved")) {
             btnSubmit.setVisibility(View.GONE);
-        }
-         else {
+        } else {
             btnSubmit.setVisibility(View.VISIBLE);
         }
 
@@ -161,24 +181,19 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(llm);
         recyclerView.setHasFixedSize(true);
 
-        if (isMonth)
-        {
+        if (isMonth) {
             // get monthly report
             reportAdapter = new MonthlyReportAdapter(FacultyReportScreenTwoActivity.this, addReportModels);
             recyclerView.setAdapter(reportAdapter);
 
 
-
-
-        }else {
+        } else {
             //get custom report
             reportAdapter = new MonthlyReportAdapter(FacultyReportScreenTwoActivity.this, addReportModels);
             recyclerView.setAdapter(reportAdapter);
 
         }
     }
-
-
 
 
     private void initializeClickEvents() {
@@ -304,7 +319,6 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -423,84 +437,325 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
             cellCount++;
         }
 
-        //set data
+
+        if (isMonth) {
+
+            //set data
+            int rowCount = 9;
+            int monthValue = AppUtility.checkMonthValue(month);
 
 
-        int rowCount = 9;
 
-        for (AddReportModel aBook : addReportModels) {
-            Row row = sheet.createRow(rowCount++);
-            writeBook(aBook, row, wb);
+
+
+
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.MONTH, monthValue - 1);
+            cal.set(Calendar.DAY_OF_MONTH, 1);
+            int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+            for (int i=0;i<weeksModels.size();i++)
+            {
+                Row row = sheet.createRow(rowCount++);
+                writeBook(row, wb);
+                Cell cell = row.createCell(3);
+
+
+                Log.e("week","........"+weeksModels.get(i).getWeeknumber());
+                Iterator<JsonElement> iterator = weeksModels.get(i).getJsonObject().iterator();
+                while(iterator.hasNext()) {
+                    System.out.println(iterator.next());
+
+                    row.setHeightInPoints(20);
+                    cell.setCellValue(iterator.next().toString());
+                    cell.setCellStyle(styles.get("cell"));
+                }
+
+                row.setHeightInPoints(20);
+                cell.setCellStyle(styles.get("cell"));
+                sheet.addMergedRegion(new CellRangeAddress(rowCount, rowCount, 3, 9));
+            }
+
+            /*for (int i = 1; i < maxDay; i++) {
+                cal.set(Calendar.DAY_OF_MONTH, i);
+                String dateStr = df.format(cal.getTime());
+                Row row = sheet.createRow(rowCount++);
+                writeBook(row, wb);
+
+
+                Cell cell = row.createCell(3);
+                row.setHeightInPoints(20);
+                cell.setCellValue(dateStr);
+                cell.setCellStyle(styles.get("cell"));
+
+                for (AddReportModel aBook : addReportModels) {
+                    if (aBook.getDate().equals(dateStr)) {
+                        cell = row.createCell(4);
+                        row.setHeightInPoints(20);
+                        cell.setCellValue(aBook.getSemester());
+                        cell.setCellStyle(styles.get("cell"));
+
+
+                        cell = row.createCell(5);
+                        row.setHeightInPoints(20);
+                        cell.setCellValue(aBook.getFrom_time());
+                        cell.setCellStyle(styles.get("cell"));
+
+
+                        cell = row.createCell(6);
+                        row.setHeightInPoints(20);
+                        cell.setCellValue(aBook.getTo_time());
+                        cell.setCellStyle(styles.get("cell"));
+
+
+                        cell = row.createCell(7);
+                        row.setHeightInPoints(20);
+                        cell.setCellValue(aBook.getType());
+                        cell.setCellStyle(styles.get("cell"));
+
+
+                        cell = row.createCell(8);
+                        row.setHeightInPoints(20);
+                        cell.setCellValue(aBook.getNo_of_hours());
+                        cell.setCellStyle(styles.get("cell"));
+
+
+                        cell = row.createCell(9);
+                        row.setHeightInPoints(20);
+                        cell.setCellValue(aBook.getDescription());
+                        cell.setCellStyle(styles.get("cell"));
+                    } else {
+                        cell = row.createCell(4);
+                        row.setHeightInPoints(20);
+                        // cell.setCellValue(aBook.getSemester());
+                        cell.setCellStyle(styles.get("cell"));
+
+                        cell = row.createCell(5);
+                        row.setHeightInPoints(20);
+                        //cell.setCellValue(aBook.getFrom_time());
+                        cell.setCellStyle(styles.get("cell"));
+
+
+                        cell = row.createCell(6);
+                        row.setHeightInPoints(20);
+                        //cell.setCellValue(aBook.getTo_time());
+                        cell.setCellStyle(styles.get("cell"));
+
+
+                        cell = row.createCell(7);
+                        row.setHeightInPoints(20);
+                        //cell.setCellValue(aBook.getType());
+                        cell.setCellStyle(styles.get("cell"));
+
+
+                        cell = row.createCell(8);
+                        row.setHeightInPoints(20);
+                        //cell.setCellValue(aBook.getNo_of_hours());
+                        cell.setCellStyle(styles.get("cell"));
+
+
+                        cell = row.createCell(9);
+                        row.setHeightInPoints(20);
+                        // cell.setCellValue(aBook.getDescription());
+                        cell.setCellStyle(styles.get("cell"));
+                    }
+
+                }
+
+
+            }*/
+
+            for (int i = 3; i < 8; i++) {
+                sheet.setColumnWidth(i, 15 * 256);  //15 characters wide
+            }
+
+            sheet.setColumnWidth(9, 50 * 256);
+
+            //row leaves
+            int rowIndex = 9 + totalDaysOfMonth + 1;
+
+            //paper allotted header
+            Row paperAlloted = sheet.createRow(rowIndex);
+            paperAlloted.setHeightInPoints(20);
+            Cell paperCell = paperAlloted.createCell(3);
+            paperCell.setCellValue("Paper Allotted :");
+            paperCell.setCellStyle(styles.get("sub"));
+            sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 3, 9));
+
+            //row paper code
+            Row rowPaperCode = sheet.createRow(rowIndex + 1);
+            rowPaperCode.setHeightInPoints(40);
+            Cell paperCodeCell = rowPaperCode.createCell(3);
+            paperCodeCell.setCellValue("Paper Code ");
+            paperCodeCell.setCellStyle(styles.get("header"));
+
+            // row paper title
+
+            rowPaperCode.setHeightInPoints(40);
+            Cell paperTitleCell = rowPaperCode.createCell(4);
+            paperTitleCell.setCellValue("Paper Title");
+            paperTitleCell.setCellStyle(styles.get("header"));
+            sheet.addMergedRegion(new CellRangeAddress(rowIndex + 1, rowIndex + 1, 4, 5));
+
+            // perc row
+            rowPaperCode.setHeightInPoints(40);
+            Cell paperPercCell = rowPaperCode.createCell(6);
+            paperPercCell.setCellValue("% of Syllabus Covered in this month");
+            paperPercCell.setCellStyle(styles.get("header"));
+            sheet.addMergedRegion(new CellRangeAddress(rowIndex + 1, rowIndex + 1, 6, 8));
+
+            // subject covered row
+            rowPaperCode.setHeightInPoints(40);
+            Cell paperCoveredCell = rowPaperCode.createCell(9);
+            paperCoveredCell.setCellValue("Cumulative Syllabus Covered");
+            paperCoveredCell.setCellStyle(styles.get("header"));
+
+
+            int rowData = rowIndex + 2;
+            int mergeIndex = rowData;
+            for (GenerateReportResponse.ReportSubject aBook : reportSubjects) {
+                Row row = sheet.createRow(rowData++);
+                writeSubjects(aBook, row, wb, sheet, mergeIndex);
+            }
+
+            int rowIndex1 = rowData + reportSubjects.size() + 1;
+
+            Row rowLeaves = sheet.createRow(rowIndex1 + 4);
+            rowLeaves.setHeightInPoints(20);
+            Cell leavesCell = rowLeaves.createCell(3);
+            leavesCell.setCellValue("Total Number of Leaves availed in this month :" + leaves);
+            leavesCell.setCellStyle(styles.get("sub"));
+            sheet.addMergedRegion(new CellRangeAddress(rowIndex1 + 2, rowIndex1 + 2, 3, 6));
+
+            //row remark
+            Row rowRemark = sheet.createRow(rowIndex1 + 3);
+            rowRemark.setHeightInPoints(40);
+            Cell remarkCell = rowRemark.createCell(3);
+            remarkCell.setCellValue("Co-ordinators Remark :" + "\n" + coRemark);
+            CellRangeAddress mergedCell = new CellRangeAddress(rowIndex1 + 3, rowIndex1 + 3, 3, 9);
+            sheet.addMergedRegion(mergedCell);
+
+            RegionUtil.setBorderTop(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
+            RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
+            RegionUtil.setBorderLeft(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
+            RegionUtil.setBorderRight(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
+
+            remarkCell.setCellStyle(styles.get("remarkCell"));
+
+            //row remark
+            Row rowRemark1 = sheet.createRow(rowIndex1 + 4);
+            rowRemark1.setHeightInPoints(40);
+            Cell remarkCell1 = rowRemark1.createCell(3);
+            remarkCell1.setCellValue("Registrar Remarks : " + "\n" + supRemark);
+            CellRangeAddress mergeCell = new CellRangeAddress(rowIndex1 + 4, rowIndex1 + 4, 3, 9);
+            sheet.addMergedRegion(mergeCell);
+
+            RegionUtil.setBorderTop(CellStyle.BORDER_THIN, mergeCell, sheet, wb);
+            RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, mergeCell, sheet, wb);
+            RegionUtil.setBorderLeft(CellStyle.BORDER_THIN, mergeCell, sheet, wb);
+            RegionUtil.setBorderRight(CellStyle.BORDER_THIN, mergeCell, sheet, wb);
+
+            remarkCell1.setCellStyle(styles.get("remarkCell"));
+
+
+            //row sign co
+            Row rowSignCo = sheet.createRow(rowIndex1 + 6);
+            rowSignCo.setHeightInPoints(30);
+            Cell signCoCell = rowSignCo.createCell(3);
+            signCoCell.setCellValue("Programme Co-ordinator");
+            signCoCell.setCellStyle(styles.get("sub"));
+            sheet.addMergedRegion(new CellRangeAddress(rowIndex1 + 5, rowIndex1 + 5, 3, 5));
+
+            //row sign co
+            rowSignCo.setHeightInPoints(30);
+            Cell signFacultyCell = rowSignCo.createCell(6);
+            signFacultyCell.setCellValue("Faculty/Project Assistant");
+            signFacultyCell.setCellStyle(styles.get("sub"));
+            sheet.addMergedRegion(new CellRangeAddress(rowIndex1 + 5, rowIndex1 + 5, 6, 8));
+
+            //row sup sign
+            rowSignCo.setHeightInPoints(30);
+            Cell signSupCell = rowSignCo.createCell(9);
+            signSupCell.setCellValue(" Superintendent ");
+            signSupCell.setCellStyle(styles.get("sub"));
+        } else {
+
+            //set data
+            int rowCount = 9;
+            for (AddReportModel aBook : addReportModels) {
+                Row row = sheet.createRow(rowCount++);
+                // writeBook(aBook, row, wb);
+            }
+            for (int i = 3; i < 8; i++) {
+                sheet.setColumnWidth(i, 15 * 256);  //15 characters wide
+            }
+
+            sheet.setColumnWidth(9, 50 * 256);
+
+            //row leaves
+            int rowIndex = 9 + addReportModels.size() + 1;
+
+
+            Row rowLeaves = sheet.createRow(rowIndex + 4);
+            rowLeaves.setHeightInPoints(20);
+            Cell leavesCell = rowLeaves.createCell(3);
+            leavesCell.setCellValue("Total Number of Leaves availed in this month :" + leaves);
+            leavesCell.setCellStyle(styles.get("sub"));
+            sheet.addMergedRegion(new CellRangeAddress(rowIndex + 2, rowIndex + 2, 3, 6));
+
+            //row remark
+            Row rowRemark = sheet.createRow(rowIndex + 3);
+            rowRemark.setHeightInPoints(40);
+            Cell remarkCell = rowRemark.createCell(3);
+            remarkCell.setCellValue("Co-ordinators Remark :" + "\n" + coRemark);
+            CellRangeAddress mergedCell = new CellRangeAddress(rowIndex + 3, rowIndex + 3, 3, 9);
+            sheet.addMergedRegion(mergedCell);
+
+            RegionUtil.setBorderTop(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
+            RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
+            RegionUtil.setBorderLeft(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
+            RegionUtil.setBorderRight(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
+
+            remarkCell.setCellStyle(styles.get("remarkCell"));
+
+            //row remark
+            Row rowRemark1 = sheet.createRow(rowIndex + 4);
+            rowRemark1.setHeightInPoints(40);
+            Cell remarkCell1 = rowRemark1.createCell(3);
+            remarkCell1.setCellValue("Registrar Remarks : " + "\n" + supRemark);
+            CellRangeAddress mergeCell = new CellRangeAddress(rowIndex + 4, rowIndex + 4, 3, 9);
+            sheet.addMergedRegion(mergeCell);
+
+            RegionUtil.setBorderTop(CellStyle.BORDER_THIN, mergeCell, sheet, wb);
+            RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, mergeCell, sheet, wb);
+            RegionUtil.setBorderLeft(CellStyle.BORDER_THIN, mergeCell, sheet, wb);
+            RegionUtil.setBorderRight(CellStyle.BORDER_THIN, mergeCell, sheet, wb);
+
+            remarkCell1.setCellStyle(styles.get("remarkCell"));
+
+
+            //row sign co
+            Row rowSignCo = sheet.createRow(rowIndex + 6);
+            rowSignCo.setHeightInPoints(30);
+            Cell signCoCell = rowSignCo.createCell(3);
+            signCoCell.setCellValue("Programme Co-ordinator");
+            signCoCell.setCellStyle(styles.get("sub"));
+            sheet.addMergedRegion(new CellRangeAddress(rowIndex + 5, rowIndex + 5, 3, 5));
+
+            //row sign co
+            rowSignCo.setHeightInPoints(30);
+            Cell signFacultyCell = rowSignCo.createCell(6);
+            signFacultyCell.setCellValue("Faculty/Project Assistant");
+            signFacultyCell.setCellStyle(styles.get("sub"));
+            sheet.addMergedRegion(new CellRangeAddress(rowIndex + 5, rowIndex + 5, 6, 8));
+
+            //row sup sign
+            rowSignCo.setHeightInPoints(30);
+            Cell signSupCell = rowSignCo.createCell(9);
+            signSupCell.setCellValue(" Superintendent ");
+            signSupCell.setCellStyle(styles.get("sub"));
         }
-
-        for (int i = 3; i < 8; i++) {
-            sheet.setColumnWidth(i, 15 * 256);  //15 characters wide
-        }
-
-        sheet.setColumnWidth(9, 50 * 256);
-
-        //row leaves
-        int rowIndex = 9 + addReportModels.size() + 1;
-
-
-        Row rowLeaves = sheet.createRow(rowIndex);
-        rowLeaves.setHeightInPoints(20);
-        Cell leavesCell = rowLeaves.createCell(3);
-        leavesCell.setCellValue("Total Number of Leaves availed in this month :" + leaves);
-        leavesCell.setCellStyle(styles.get("sub"));
-        sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 3, 6));
-
-        //row remark
-        Row rowRemark = sheet.createRow(rowIndex + 1);
-        rowRemark.setHeightInPoints(40);
-        Cell remarkCell = rowRemark.createCell(3);
-        remarkCell.setCellValue("Co-ordinators Remark :" + "\n" + coRemark);
-        CellRangeAddress mergedCell = new CellRangeAddress(rowIndex + 1, rowIndex + 1, 3, 9);
-        sheet.addMergedRegion(mergedCell);
-
-        RegionUtil.setBorderTop(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
-        RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
-        RegionUtil.setBorderLeft(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
-        RegionUtil.setBorderRight(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
-
-        remarkCell.setCellStyle(styles.get("remarkCell"));
-
-        //row remark
-        Row rowRemark1 = sheet.createRow(rowIndex + 2);
-        rowRemark1.setHeightInPoints(40);
-        Cell remarkCell1 = rowRemark1.createCell(3);
-        remarkCell1.setCellValue("Registrar Remarks : " + "\n" + supRemark);
-        CellRangeAddress mergeCell = new CellRangeAddress(rowIndex + 2, rowIndex + 2, 3, 9);
-        sheet.addMergedRegion(mergeCell);
-
-        RegionUtil.setBorderTop(CellStyle.BORDER_THIN, mergeCell, sheet, wb);
-        RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, mergeCell, sheet, wb);
-        RegionUtil.setBorderLeft(CellStyle.BORDER_THIN, mergeCell, sheet, wb);
-        RegionUtil.setBorderRight(CellStyle.BORDER_THIN, mergeCell, sheet, wb);
-
-        remarkCell1.setCellStyle(styles.get("remarkCell"));
-
-
-        //row sign co
-        Row rowSignCo = sheet.createRow(rowIndex + 4);
-        rowSignCo.setHeightInPoints(30);
-        Cell signCoCell = rowSignCo.createCell(3);
-        signCoCell.setCellValue("Programme Co-ordinator");
-        signCoCell.setCellStyle(styles.get("sub"));
-        sheet.addMergedRegion(new CellRangeAddress(rowIndex + 3, rowIndex + 3, 3, 5));
-
-        //row sign co
-        rowSignCo.setHeightInPoints(30);
-        Cell signFacultyCell = rowSignCo.createCell(6);
-        signFacultyCell.setCellValue("Faculty/Project Assistant");
-        signFacultyCell.setCellStyle(styles.get("sub"));
-        sheet.addMergedRegion(new CellRangeAddress(rowIndex + 3, rowIndex + 3, 6, 8));
-
-        //row sup sign
-        rowSignCo.setHeightInPoints(30);
-        Cell signSupCell = rowSignCo.createCell(9);
-        signSupCell.setCellValue(" Superintendent ");
-        signSupCell.setCellStyle(styles.get("sub"));
 
 
         FileOutputStream outputStream = null;
@@ -523,6 +778,7 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
         }
     }
 
+
     private void showDialogUser() {
         hideProgressDialog();
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(FacultyReportScreenTwoActivity.this);
@@ -538,47 +794,85 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void writeBook(AddReportModel aBook, Row row, Workbook wb) {
+    private void writeBook(Row row, Workbook wb) {
 
         Map<String, CellStyle> styles = createStyles(wb);
 
         Cell cell = row.createCell(3);
         row.setHeightInPoints(20);
-        cell.setCellValue(aBook.getDate());
+        //cell.setCellValue(aBook.getDate());
         cell.setCellStyle(styles.get("cell"));
 
         cell = row.createCell(4);
         row.setHeightInPoints(20);
-        cell.setCellValue(aBook.getSemester());
+        // cell.setCellValue(aBook.getSemester());
         cell.setCellStyle(styles.get("cell"));
 
         cell = row.createCell(5);
         row.setHeightInPoints(20);
-        cell.setCellValue(aBook.getFrom_time());
+        // cell.setCellValue(aBook.getFrom_time());
         cell.setCellStyle(styles.get("cell"));
 
 
         cell = row.createCell(6);
         row.setHeightInPoints(20);
-        cell.setCellValue(aBook.getTo_time());
+        //  cell.setCellValue(aBook.getTo_time());
         cell.setCellStyle(styles.get("cell"));
 
 
         cell = row.createCell(7);
         row.setHeightInPoints(20);
-        cell.setCellValue(aBook.getType());
+        // cell.setCellValue(aBook.getType());
         cell.setCellStyle(styles.get("cell"));
 
 
         cell = row.createCell(8);
         row.setHeightInPoints(20);
-        cell.setCellValue(aBook.getNo_of_hours());
+        //  cell.setCellValue(aBook.getNo_of_hours());
         cell.setCellStyle(styles.get("cell"));
 
 
         cell = row.createCell(9);
         row.setHeightInPoints(20);
-        cell.setCellValue(aBook.getDescription());
+        // cell.setCellValue(aBook.getDescription());
+        cell.setCellStyle(styles.get("cell"));
+
+
+    }
+
+    private void writeSubjects(GenerateReportResponse.ReportSubject aBook, Row row, Workbook wb, Sheet sheet, int mergeIndex) {
+        Map<String, CellStyle> styles = createStyles(wb);
+
+        Cell cell = row.createCell(3);
+        row.setHeightInPoints(20);
+        cell.setCellValue(aBook.getSubject_code());
+        cell.setCellStyle(styles.get("cell"));
+
+        cell = row.createCell(4);
+        row.setHeightInPoints(20);
+        cell.setCellValue(aBook.getSubject_name());
+        cell.setCellStyle(styles.get("cell"));
+        CellRangeAddress mergedCell = new CellRangeAddress(mergeIndex, mergeIndex, 4, 5);
+        sheet.addMergedRegion(mergedCell);
+        RegionUtil.setBorderTop(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
+        RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
+        RegionUtil.setBorderLeft(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
+        RegionUtil.setBorderRight(CellStyle.BORDER_THIN, mergedCell, sheet, wb);
+
+        cell = row.createCell(6);
+        row.setHeightInPoints(20);
+        cell.setCellValue(aBook.getPercentage());
+        cell.setCellStyle(styles.get("cell"));
+        CellRangeAddress mergedCell1 = new CellRangeAddress(mergeIndex, mergeIndex, 6, 8);
+        sheet.addMergedRegion(mergedCell1);
+        RegionUtil.setBorderTop(CellStyle.BORDER_THIN, mergedCell1, sheet, wb);
+        RegionUtil.setBorderBottom(CellStyle.BORDER_THIN, mergedCell1, sheet, wb);
+        RegionUtil.setBorderLeft(CellStyle.BORDER_THIN, mergedCell1, sheet, wb);
+        RegionUtil.setBorderRight(CellStyle.BORDER_THIN, mergedCell1, sheet, wb);
+
+        cell = row.createCell(9);
+        row.setHeightInPoints(20);
+        cell.setCellValue("");
         cell.setCellStyle(styles.get("cell"));
     }
 

@@ -1,23 +1,25 @@
-package com.ampwork.workdonereportmanagement.clerk.activities;
+package com.ampwork.workdonereportmanagement.clerk.activities.student;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.ampwork.workdonereportmanagement.R;
 import com.ampwork.workdonereportmanagement.model.ApiResponse;
-import com.ampwork.workdonereportmanagement.model.ProgramRepose;
+import com.ampwork.workdonereportmanagement.model.ProgramResponse;
 import com.ampwork.workdonereportmanagement.model.StudentDetailsModel;
 import com.ampwork.workdonereportmanagement.network.Api;
 import com.ampwork.workdonereportmanagement.network.ApiClient;
@@ -53,7 +55,7 @@ public class AddStudentActivity extends AppCompatActivity {
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     Api api;
     ProgressDialog progressDialog;
-    List<ProgramRepose.ProgramModel> programModels = new ArrayList<>();
+    List<ProgramResponse.ProgramModel> programModels = new ArrayList<>();
     StudentDetailsModel studentDetailsModel;
 
     @Override
@@ -397,14 +399,14 @@ public class AddStudentActivity extends AppCompatActivity {
         } else if (TextUtils.isEmpty(gender) || gender.equals("Select")) {
             genderTextInputLayout.setError(getResources().getString(R.string.gender_error_txt));
         } else {
-            StudentDetailsModel studentDetailsModel = new StudentDetailsModel(usn, name, program, semester, dob, email, phone, gender, address);
+            StudentDetailsModel studentDetails = new StudentDetailsModel(usn, name, program, semester, dob, email, phone, gender, address);
             if (studentDetailsModel==null)
             {
                 //create new student data
-                SaveStudentDetails(studentDetailsModel);
+                SaveStudentDetails(studentDetails);
             }else {
                 //update student data
-                updateStudentDetails(studentDetailsModel);
+                updateStudentDetails(studentDetails);
 
             }
 
@@ -495,12 +497,12 @@ public class AddStudentActivity extends AppCompatActivity {
 
     private void getProgramList() {
         showProgressDialog("Please wait...");
-        Call<ProgramRepose> call = api.getPrograms();
-        call.enqueue(new Callback<ProgramRepose>() {
+        Call<ProgramResponse> call = api.getPrograms();
+        call.enqueue(new Callback<ProgramResponse>() {
             @Override
-            public void onResponse(Call<ProgramRepose> call, Response<ProgramRepose> response) {
+            public void onResponse(Call<ProgramResponse> call, Response<ProgramResponse> response) {
                 int statusCode = response.code();
-                ProgramRepose repose = response.body();
+                ProgramResponse repose = response.body();
                 String msg = repose.getMessage();
                 boolean status = repose.isStatus();
                 switch (statusCode) {
@@ -528,17 +530,17 @@ public class AddStudentActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ProgramRepose> call, Throwable t) {
+            public void onFailure(Call<ProgramResponse> call, Throwable t) {
                 hideProgressDialog();
                 Toast.makeText(AddStudentActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void loadPrograms(List<ProgramRepose.ProgramModel> programModels) {
+    private void loadPrograms(List<ProgramResponse.ProgramModel> programModels) {
         String[] subjects = new String[programModels.size()];
         int index = 0;
-        for (ProgramRepose.ProgramModel value : programModels) {
+        for (ProgramResponse.ProgramModel value : programModels) {
             subjects[index] = (String) value.getProgramName();
             index++;
         }
@@ -574,5 +576,14 @@ public class AddStudentActivity extends AppCompatActivity {
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

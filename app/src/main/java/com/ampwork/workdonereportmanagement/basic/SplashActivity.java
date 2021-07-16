@@ -3,6 +3,7 @@ package com.ampwork.workdonereportmanagement.basic;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,7 +13,11 @@ import com.ampwork.workdonereportmanagement.faculty.activities.FacultyNavigation
 import com.ampwork.workdonereportmanagement.hod.activities.HodHomeActivity;
 import com.ampwork.workdonereportmanagement.superintendent.SuperintendentHomeActivity;
 import com.ampwork.workdonereportmanagement.utils.AppConstants;
+import com.ampwork.workdonereportmanagement.utils.AppUtility;
 import com.ampwork.workdonereportmanagement.utils.PreferencesManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -29,6 +34,36 @@ public class SplashActivity extends AppCompatActivity {
         isLoggedIn = myPref.getBooleanValue(AppConstants.PREF_IS_LOGIN);
         role = myPref.getStringValue(AppConstants.PREF_ROLE);
         Boolean is_from_notification = getIntent().getBooleanExtra("is_from_notification", false);
+
+        List<String> datesList = new ArrayList<>();
+        List<String> endDatesList = new ArrayList<>();
+
+        datesList = AppUtility.getDateListOfMonth(6);
+        endDatesList = AppUtility.getMonthEndDates(6);
+
+        /*for (String d : datesList){
+            for (String b:endDatesList){
+
+                if (d.equals(b))
+                {
+                    Log.e("insert","....."+b);
+                    datesList.remove(b);
+                }
+            }
+            Log.e("insert date","..............."+d);
+        }
+*/
+
+        for (int i=0;i<datesList.size();i++){
+            for (int j=0;j<endDatesList.size();j++){
+                if (datesList.get(i).equals(endDatesList.get(j))){
+                    Log.e("insert","....."+endDatesList.get(j));
+                    datesList.remove(i);
+                }
+            }
+            Log.e("insert date","..............."+datesList.get(i));
+        }
+
 
         new Handler().postDelayed(new Runnable() {
             @Override

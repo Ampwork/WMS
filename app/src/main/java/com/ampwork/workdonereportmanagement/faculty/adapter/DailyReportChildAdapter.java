@@ -1,6 +1,8 @@
 package com.ampwork.workdonereportmanagement.faculty.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -19,6 +21,7 @@ import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
 import com.ampwork.workdonereportmanagement.R;
+import com.ampwork.workdonereportmanagement.faculty.activities.EditDailyReportActivity;
 import com.ampwork.workdonereportmanagement.model.AddReportModel;
 import com.ampwork.workdonereportmanagement.utils.AppUtility;
 import com.google.android.material.card.MaterialCardView;
@@ -26,35 +29,27 @@ import com.google.android.material.card.MaterialCardView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DailyReportAdapter extends RecyclerView.Adapter<DailyReportAdapter.ViewHolder> {
+public class DailyReportChildAdapter extends RecyclerView.Adapter<DailyReportChildAdapter.ViewHolder> {
 
     private Context context;
     private List<AddReportModel> reportModels = new ArrayList<>();
     private List<AddReportModel> mFilteredList = new ArrayList<>();
-
     String status;
-    private RecycleItemViewClicked itemViewClicked;
 
-    public interface RecycleItemViewClicked {
-        public void onItemViewSelected(AddReportModel addReportModel);
-    }
 
-    public DailyReportAdapter(Context context, List<AddReportModel> reportModels,
-                              RecycleItemViewClicked itemViewClicked, String status) {
+    public DailyReportChildAdapter(Context context, List<AddReportModel> reportModels,
+                                   String status) {
         this.context = context;
         this.reportModels = reportModels;
         this.mFilteredList = reportModels;
-        this.itemViewClicked = itemViewClicked;
         this.status = status;
     }
-
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //View view = View.inflate(context, R.layout.dept_list_item, null);
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.daily_reports_list_items, parent, false);
+                .inflate(R.layout.child_daily_reports_list_items, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -71,7 +66,7 @@ public class DailyReportAdapter extends RecyclerView.Adapter<DailyReportAdapter.
         String totalAbsent = mFilteredList.get(position).getTotal_absent();
         String month = AppUtility.getDateMonth(date);
         String dateStr = AppUtility.getDateFormat(date);
-        holder.tvDate.setText(month+"\n"+dateStr);
+        holder.tvDate.setText(month + "\n" + dateStr);
         holder.tvSubject.setText(subject);
         holder.tvSemester.setText(semester);
         holder.tvTime.setText(fromTime + " " + "to" + " " + toTime);
@@ -105,7 +100,9 @@ public class DailyReportAdapter extends RecyclerView.Adapter<DailyReportAdapter.
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.update:
-                                itemViewClicked.onItemViewSelected(mFilteredList.get(position));
+                                Intent editIntent = new Intent(context, EditDailyReportActivity.class);
+                                editIntent.putExtra("data", (Parcelable) mFilteredList.get(position));
+                                context.startActivity(editIntent);
                                 break;
                         }
                         return true;
@@ -124,7 +121,7 @@ public class DailyReportAdapter extends RecyclerView.Adapter<DailyReportAdapter.
                     holder.arrow.setBackgroundResource(R.drawable.ic_baseline_expand_more_24);
                     TransitionManager.beginDelayedTransition(holder.cardView,
                             new AutoTransition());
-                }else {
+                } else {
 
                     holder.hiddenLayout.setVisibility(View.VISIBLE);
                     holder.arrow.setBackgroundResource(R.drawable.ic_baseline_expand_less_24);
@@ -152,9 +149,9 @@ public class DailyReportAdapter extends RecyclerView.Adapter<DailyReportAdapter.
                 String charString = constraint.toString().toLowerCase();
                 if (charString.isEmpty()) {
                     mFilteredList = reportModels;
-                } else if (charString.equals("all")){
+                } else if (charString.equals("all")) {
                     mFilteredList = reportModels;
-                }else {
+                } else {
                     List<AddReportModel> filteredList = new ArrayList<>();
                     for (AddReportModel data : reportModels) {
                         if (data.getSemester().toLowerCase().contains(charString)) {
@@ -183,10 +180,11 @@ public class DailyReportAdapter extends RecyclerView.Adapter<DailyReportAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDate, tvSubject, tvSemester, tvTime, tvTotalPresent, tvTotalAbsent,arrow;
+        TextView tvDate, tvSubject, tvSemester, tvTime, tvTotalPresent, tvTotalAbsent, arrow;
         ImageButton btnUpdate;
         LinearLayout hiddenLayout;
         MaterialCardView cardView;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 

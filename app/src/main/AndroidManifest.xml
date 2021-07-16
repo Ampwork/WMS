@@ -70,7 +70,7 @@
             android:name=".hod.activities.HodHomeActivity"
             android:label="" />
         <activity
-            android:name=".clerk.activities.DepartmentWiseStudentDetailsActivity"
+            android:name=".clerk.activities.student.DepartmentWiseStudentDetailsActivity"
             android:label="" />
         <activity
             android:name=".faculty.activities.AddReportAttendanceStepTwoActivity"
@@ -82,7 +82,7 @@
             android:name=".faculty.activities.ReportsMainActivity"
             android:label="Reports" />
         <activity
-            android:name=".clerk.activities.AddStudentActivity"
+            android:name=".clerk.activities.student.AddStudentActivity"
             android:label="" />
         <activity
             android:name=".clerk.activities.ClerkProfileActivity"
@@ -112,9 +112,6 @@
             android:name=".faculty.activities.EditDailyReportActivity"
             android:label="" />
         <activity
-            android:name=".faculty.activities.DailyReportsActivity"
-            android:label="" />
-        <activity
             android:name=".faculty.activities.AddDailyReportStepTwoActivity"
             android:label="" />
         <activity
@@ -129,9 +126,36 @@
         <activity
             android:name=".faculty.activities.FacultyReportScreenOneActivity"
             android:label="" />
+        <activity
+            android:name=".faculty.activities.AddReportSubjectActivity"
+            android:label="" />
+        <activity
+            android:name=".clerk.activities.programs.ProgramsHomeActivity"
+            android:label="" />
+        <activity
+            android:name=".clerk.activities.student.StudentHomeActivity"
+            android:label=""
+            android:theme="@style/AppTheme_two" />
+        <activity
+            android:name=".clerk.activities.programs.AddProgramActivity"
+            android:label="" />
+        <activity
+            android:name=".clerk.activities.faculty.SubjectsHomeActivity"
+            android:label="" />
+        <activity
+            android:name=".clerk.activities.faculty.FacultyHomeActivity"
+            android:label="" />
+        <activity
+            android:name=".clerk.activities.faculty.AddSubjectActivity"
+            android:label="" />
 
-        <activity android:name=".faculty.activities.AddReportSubjectActivity"
-            android:label=""/>
+        <activity
+            android:name=".clerk.activities.faculty.AddFacultyActivity"
+            android:label="" />
+
+        <activity
+            android:name=".clerk.activities.faculty.FacultyDetailsActivity"
+            android:label="" />
     </application>
 
 </manifest>

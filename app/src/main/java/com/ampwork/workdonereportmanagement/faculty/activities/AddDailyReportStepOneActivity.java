@@ -135,7 +135,6 @@ public class AddDailyReportStepOneActivity extends AppCompatActivity {
     private void getSubjectList() {
         showProgressDialog("Please wait...");
         Call<SubjectResponse> call = api.getSubjects(programName);
-
         call.enqueue(new Callback<SubjectResponse>() {
             @Override
             public void onResponse(Call<SubjectResponse> call, Response<SubjectResponse> response) {

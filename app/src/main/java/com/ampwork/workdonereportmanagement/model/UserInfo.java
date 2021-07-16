@@ -1,8 +1,11 @@
 package com.ampwork.workdonereportmanagement.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class UserInfo {
+public class UserInfo implements Parcelable {
 
     @SerializedName("id")
     private String userId;
@@ -61,6 +64,45 @@ public class UserInfo {
         this.about = about;
     }
 
+    public UserInfo(String firstName, String lastName, String email, String phone,
+                    String password, String role, String program) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+        this.role = role;
+        this.program = program;
+    }
+
+    protected UserInfo(Parcel in) {
+        userId = in.readString();
+        firstName = in.readString();
+        lastName = in.readString();
+        email = in.readString();
+        phone = in.readString();
+        password = in.readString();
+        fcmToken = in.readString();
+        about = in.readString();
+        profileUrl = in.readString();
+        signUrl = in.readString();
+        role = in.readString();
+        program = in.readString();
+        username = in.readString();
+    }
+
+    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
+        @Override
+        public UserInfo createFromParcel(Parcel in) {
+            return new UserInfo(in);
+        }
+
+        @Override
+        public UserInfo[] newArray(int size) {
+            return new UserInfo[size];
+        }
+    };
+
     public String getUserId() {
         return userId;
     }
@@ -112,5 +154,27 @@ public class UserInfo {
     @Override
     public String toString() {
         return firstName + " " + lastName;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(userId);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(email);
+        dest.writeString(phone);
+        dest.writeString(password);
+        dest.writeString(fcmToken);
+        dest.writeString(about);
+        dest.writeString(profileUrl);
+        dest.writeString(signUrl);
+        dest.writeString(role);
+        dest.writeString(program);
+        dest.writeString(username);
     }
 }

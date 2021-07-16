@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,10 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ampwork.workdonereportmanagement.R;
 import com.ampwork.workdonereportmanagement.faculty.activities.AddDailyReportStepOneActivity;
-import com.ampwork.workdonereportmanagement.faculty.activities.EditDailyReportActivity;
-import com.ampwork.workdonereportmanagement.faculty.adapter.DailyReportAdapter;
+import com.ampwork.workdonereportmanagement.faculty.adapter.DailyReportChildAdapter;
+import com.ampwork.workdonereportmanagement.faculty.adapter.DailyReportParentAdapter;
 import com.ampwork.workdonereportmanagement.model.AddReportModel;
-import com.ampwork.workdonereportmanagement.model.DailyReportResponse;
+import com.ampwork.workdonereportmanagement.model.DailyReportModel;
 import com.ampwork.workdonereportmanagement.network.Api;
 import com.ampwork.workdonereportmanagement.network.ApiClient;
 import com.google.android.material.card.MaterialCardView;
@@ -36,14 +35,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class DailyReportsFragment extends Fragment implements DailyReportAdapter.RecycleItemViewClicked {
+public class DailyReportsFragment extends Fragment {
 
 
     ProgressDialog progressDialog;
 
     RecyclerView recyclerView;
-    DailyReportAdapter reportAdapter;
-    List<AddReportModel> reportModels = new ArrayList<>();
+    DailyReportChildAdapter reportAdapter;
+
     Api api;
     String reportId, program, reportStatus;
     FloatingActionButton fabAdd;
@@ -111,25 +110,32 @@ public class DailyReportsFragment extends Fragment implements DailyReportAdapter
 
     private void getDailyReports() {
         showProgressDialog("Please wait...");
-        Call<DailyReportResponse> call = api.getDailyReports(reportId);
-        call.enqueue(new Callback<DailyReportResponse>() {
+        Call<DailyReportModel> call = api.getDailyReports(reportId);
+        call.enqueue(new Callback<DailyReportModel>() {
             @Override
-            public void onResponse(Call<DailyReportResponse> call, Response<DailyReportResponse> response) {
+            public void onResponse(Call<DailyReportModel> call, Response<DailyReportModel> response) {
                 int statusCode = response.code();
-                DailyReportResponse apiResponse = response.body();
-                String msg = apiResponse.getMessage();
-                Log.e("statys", "........." + statusCode);
-                boolean status = apiResponse.isStatus();
+
                 switch (statusCode) {
                     case 200:
+                        DailyReportModel apiResponse = response.body();
+                        String msg = apiResponse.getMessage();
+                        boolean status = apiResponse.isStatus();
                         hideProgressDialog();
                         if (status) {
                             if (msg.equals("Daily Reports")) {
-                                reportModels = apiResponse.getAddReportModels();
-                                reportAdapter = new DailyReportAdapter(getActivity(),
-                                        reportModels, DailyReportsFragment.this,
-                                        reportStatus);
-                                recyclerView.setAdapter(reportAdapter);
+                                List<DailyReportModel.ReportsModel> reportModels = apiResponse.getReportsModels();
+                                List<AddReportModel> addReportModels = new ArrayList<>();
+
+                                 for ( int i=0;i<reportModels.size();i++)
+                                {
+                                    for (AddReportModel addReportModel : reportModels.get(i).getAddReportModels()){
+                                        addReportModels.add(addReportModel);
+                                    }
+                                }
+                                DailyReportParentAdapter DailyReportParentAdapter = new DailyReportParentAdapter(getActivity(),
+                                        reportModels,addReportModels,reportStatus);
+                                recyclerView.setAdapter(DailyReportParentAdapter);
                             }
                         } else {
                             if (msg.equals("Reports not found")) {
@@ -149,7 +155,7 @@ public class DailyReportsFragment extends Fragment implements DailyReportAdapter
             }
 
             @Override
-            public void onFailure(Call<DailyReportResponse> call, Throwable t) {
+            public void onFailure(Call<DailyReportModel> call, Throwable t) {
                 hideProgressDialog();
                 Toast.makeText(getActivity(), "" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -225,11 +231,6 @@ public class DailyReportsFragment extends Fragment implements DailyReportAdapter
         }
     }
 
-    @Override
-    public void onItemViewSelected(AddReportModel addReportModel) {
-        Intent editIntent = new Intent(getActivity(), EditDailyReportActivity.class);
-        editIntent.putExtra("data", (Parcelable) addReportModel);
-        startActivity(editIntent);
-    }
+
 
 }

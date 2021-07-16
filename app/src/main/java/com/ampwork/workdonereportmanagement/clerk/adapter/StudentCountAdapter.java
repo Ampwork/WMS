@@ -10,8 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ampwork.workdonereportmanagement.R;
-import com.ampwork.workdonereportmanagement.faculty.adapter.DailyReportAdapter;
-import com.ampwork.workdonereportmanagement.model.AddReportModel;
 import com.ampwork.workdonereportmanagement.model.ClerkResponse;
 import com.google.android.material.card.MaterialCardView;
 

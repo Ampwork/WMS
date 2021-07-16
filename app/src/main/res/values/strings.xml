@@ -26,6 +26,15 @@
     <string name="dob_error_txt">Enter DOB</string>
     <string name="address_error_txt">Enter address</string>
     <string name="perc_error_txt">Enter subject percentage</string>
+    <string name="prgm_error_txt">Enter program name</string>
+    <string name="subject_name_error_txt">Enter subject name</string>
+    <string name="subject_code_error_txt">Enter subject code </string>
+
+    <string name="fName_error_txt">Enter first name</string>
+    <string name="lName_error_txt">Enter last name</string>
+    <string name="role_error_txt">Select role</string>
+    <string name="select_program_error_txt">Select program</string>
+    <string name="confirm_psw_error_txt">Password does not match</string>
     <string name="view_report_in_excel"><u><b>View report in excel</b></u></string>
 
 

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:fitsSystemWindows="true"
-    tools:context=".clerk.activities.DepartmentWiseStudentDetailsActivity">
+    tools:context=".clerk.activities.student.DepartmentWiseStudentDetailsActivity">
 
     <include
         android:id="@+id/toolbar"

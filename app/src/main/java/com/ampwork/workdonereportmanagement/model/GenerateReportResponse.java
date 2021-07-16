@@ -3,8 +3,13 @@ package com.ampwork.workdonereportmanagement.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
+import org.json.JSONObject;
+
+import java.io.Serializable;
 import java.util.List;
 
 public class GenerateReportResponse {
@@ -51,6 +56,12 @@ public class GenerateReportResponse {
     @SerializedName("data")
     private List<ReportResponseModel> reportResponseModelList;
 
+    @SerializedName("weeks")
+    private List<WeeksModel> weeksModel;
+
+    public List<WeeksModel> getWeeksModel() {
+        return weeksModel;
+    }
 
     public boolean isStatus() {
         return status;
@@ -109,10 +120,14 @@ public class GenerateReportResponse {
         @SerializedName("report_list")
         private List<AddReportModel> addReportModels;
 
+        @SerializedName("report_subject")
+        private List<ReportSubject> reportSubjects;
+
         public ReportResponseModel(String id, String userid) {
             this.id = id;
             this.userid = userid;
         }
+
 
         protected ReportResponseModel(Parcel in) {
             id = in.readString();
@@ -129,29 +144,7 @@ public class GenerateReportResponse {
             co_remark = in.readString();
             sup_remark = in.readString();
             addReportModels = in.createTypedArrayList(AddReportModel.CREATOR);
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(id);
-            dest.writeString(userid);
-            dest.writeString(username);
-            dest.writeString(month);
-            dest.writeString(year);
-            dest.writeString(program);
-            dest.writeString(leaves);
-            dest.writeString(usersign);
-            dest.writeString(co_sign);
-            dest.writeString(superintendent);
-            dest.writeString(status);
-            dest.writeString(co_remark);
-            dest.writeString(sup_remark);
-            dest.writeTypedList(addReportModels);
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
+            reportSubjects = in.createTypedArrayList(ReportSubject.CREATOR);
         }
 
         public static final Creator<ReportResponseModel> CREATOR = new Creator<ReportResponseModel>() {
@@ -222,6 +215,133 @@ public class GenerateReportResponse {
             return addReportModels;
         }
 
+        public List<ReportSubject> getReportSubjects() {
+            return reportSubjects;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(id);
+            dest.writeString(userid);
+            dest.writeString(username);
+            dest.writeString(month);
+            dest.writeString(year);
+            dest.writeString(program);
+            dest.writeString(leaves);
+            dest.writeString(usersign);
+            dest.writeString(co_sign);
+            dest.writeString(superintendent);
+            dest.writeString(status);
+            dest.writeString(co_remark);
+            dest.writeString(sup_remark);
+            dest.writeTypedList(addReportModels);
+            dest.writeTypedList(reportSubjects);
+        }
+    }
+
+    public static class ReportSubject implements Parcelable {
+
+        @SerializedName("id")
+        private String id;
+
+        @SerializedName("report_id")
+        private String report_id;
+
+        @SerializedName("subject_code")
+        private String subject_code;
+
+        @SerializedName("subject_name")
+        private String subject_name;
+
+        @SerializedName("percentage")
+        private String percentage;
+
+        @SerializedName("description")
+        private String description;
+
+
+        protected ReportSubject(Parcel in) {
+            id = in.readString();
+            report_id = in.readString();
+            subject_code = in.readString();
+            subject_name = in.readString();
+            percentage = in.readString();
+            description = in.readString();
+        }
+
+        public static final Creator<ReportSubject> CREATOR = new Creator<ReportSubject>() {
+            @Override
+            public ReportSubject createFromParcel(Parcel in) {
+                return new ReportSubject(in);
+            }
+
+            @Override
+            public ReportSubject[] newArray(int size) {
+                return new ReportSubject[size];
+            }
+        };
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getReport_id() {
+            return report_id;
+        }
+
+        public String getSubject_code() {
+            return subject_code;
+        }
+
+        public String getSubject_name() {
+            return subject_name;
+        }
+
+        public String getPercentage() {
+            return percentage;
+        }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(id);
+            dest.writeString(report_id);
+            dest.writeString(subject_code);
+            dest.writeString(subject_name);
+            dest.writeString(percentage);
+            dest.writeString(description);
+        }
+    }
+
+    public static class WeeksModel implements Serializable {
+        @SerializedName("weeknumber")
+        String weeknumber;
+
+        @SerializedName("dates")
+        JsonArray jsonObject;
+
+
+        public String getWeeknumber() {
+            return weeknumber;
+        }
+
+        public JsonArray getJsonObject() {
+            return jsonObject;
+        }
 
     }
 }

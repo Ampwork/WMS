@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ampwork.workdonereportmanagement.R;
 import com.ampwork.workdonereportmanagement.faculty.activities.AddReportAttendanceStepOneActivity;
 import com.ampwork.workdonereportmanagement.faculty.activities.EditReportAttendanceActivity;
-import com.ampwork.workdonereportmanagement.faculty.adapter.AttendanceReportAdapter;
+import com.ampwork.workdonereportmanagement.faculty.adapter.AttendanceReportChildAdapter;
+import com.ampwork.workdonereportmanagement.faculty.adapter.AttendanceReportParentAdapter;
 import com.ampwork.workdonereportmanagement.model.AttendanceReportResponse;
 import com.ampwork.workdonereportmanagement.model.ReportAttendanceModel;
 import com.ampwork.workdonereportmanagement.network.Api;
@@ -37,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReportAttendanceFragment extends Fragment implements AttendanceReportAdapter.RecycleItemViewClicked {
+public class ReportAttendanceFragment extends Fragment implements AttendanceReportChildAdapter.RecycleItemViewClicked {
 
     ProgressDialog progressDialog;
 
@@ -49,7 +49,7 @@ public class ReportAttendanceFragment extends Fragment implements AttendanceRepo
     FloatingActionButton fabAdd;
     PreferencesManager preferencesManager;
     MaterialCardView filterCardView;
-    AttendanceReportAdapter attendanceReportAdapter;
+    AttendanceReportChildAdapter attendanceReportChildAdapter;
     List<ReportAttendanceModel> reportAttendanceModels = new ArrayList<>();
     String[] semArray = {"semester 1", "semester 2", "semester 3", "semester 4", "All"};
 
@@ -113,7 +113,7 @@ public class ReportAttendanceFragment extends Fragment implements AttendanceRepo
 
     private void getAttendanceReports() {
         showProgressDialog("Please wait...");
-        Call<AttendanceReportResponse> call = api.getAttedanceReport(reportId, userId);
+        Call<AttendanceReportResponse> call = api.getAttendanceReport(reportId, userId);
         call.enqueue(new Callback<AttendanceReportResponse>() {
             @Override
             public void onResponse(Call<AttendanceReportResponse> call, Response<AttendanceReportResponse> response) {
@@ -126,11 +126,18 @@ public class ReportAttendanceFragment extends Fragment implements AttendanceRepo
                         boolean status = apiResponse.isStatus();
                         if (status) {
                             if (msg.equals("Records Found")) {
-                                reportAttendanceModels = apiResponse.getReportAttendanceModels();
-                                attendanceReportAdapter = new AttendanceReportAdapter(getActivity(),
-                                        reportAttendanceModels, ReportAttendanceFragment.this,
-                                        reportStatus);
-                                recyclerView.setAdapter(attendanceReportAdapter);
+                                List<AttendanceReportResponse.Reports> reportModels = apiResponse.getReportsList();
+                                List<ReportAttendanceModel> reportAttendanceModels = new ArrayList<>();
+
+                                for ( int i=0;i<reportModels.size();i++)
+                                {
+                                    for (ReportAttendanceModel model : reportModels.get(i).getReportAttendanceModels()){
+                                        reportAttendanceModels.add(model);
+                                    }
+                                }
+                                AttendanceReportParentAdapter adapter = new AttendanceReportParentAdapter(getActivity(),
+                                        reportModels,reportAttendanceModels,reportStatus);
+                                recyclerView.setAdapter(adapter);
 
                             } else {
                                 Toast.makeText(getActivity(), "" + msg, Toast.LENGTH_SHORT).show();
@@ -187,7 +194,7 @@ public class ReportAttendanceFragment extends Fragment implements AttendanceRepo
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (!TextUtils.isEmpty(selectedSemester)) {
-                    attendanceReportAdapter.getFilter().filter(selectedSemester);
+                    attendanceReportChildAdapter.getFilter().filter(selectedSemester);
                 }
 
                 dialog.dismiss();
@@ -230,8 +237,6 @@ public class ReportAttendanceFragment extends Fragment implements AttendanceRepo
 
     @Override
     public void onItemViewSelected(ReportAttendanceModel addReportModel) {
-        Intent intent = new Intent(getActivity(), EditReportAttendanceActivity.class);
-        intent.putExtra("data",(Parcelable) addReportModel);
-        startActivity(intent);
+
     }
 }

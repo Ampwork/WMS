@@ -27,7 +27,8 @@ import androidx.fragment.app.Fragment;
 
 import com.ampwork.workdonereportmanagement.R;
 import com.ampwork.workdonereportmanagement.faculty.activities.FacultyReportScreenOneActivity;
-import com.ampwork.workdonereportmanagement.model.ProgramRepose;
+
+import com.ampwork.workdonereportmanagement.model.ProgramResponse;
 import com.ampwork.workdonereportmanagement.model.SubjectModel;
 import com.ampwork.workdonereportmanagement.model.SubjectResponse;
 import com.ampwork.workdonereportmanagement.network.Api;
@@ -73,7 +74,7 @@ public class GenerateReportFragment extends Fragment {
     Api api;
     String userId, program;
     boolean isMonth = false;
-    List<ProgramRepose.ProgramModel> programModels = new ArrayList<>();
+    List<ProgramResponse.ProgramModel> programModels = new ArrayList<>();
     List<SubjectModel> subjectModelList = new ArrayList<>();
 
     String[] months = {"January", "February", "March", "April", "May", "June", "July", "August",
@@ -325,12 +326,12 @@ public class GenerateReportFragment extends Fragment {
 
     private void getProgramList() {
         showProgressDialog("Please wait...");
-        Call<ProgramRepose> call = api.getPrograms();
-        call.enqueue(new Callback<ProgramRepose>() {
+        Call<ProgramResponse> call = api.getPrograms();
+        call.enqueue(new Callback<ProgramResponse>() {
             @Override
-            public void onResponse(Call<ProgramRepose> call, Response<ProgramRepose> response) {
+            public void onResponse(Call<ProgramResponse> call, Response<ProgramResponse> response) {
                 int statusCode = response.code();
-                ProgramRepose repose = response.body();
+                ProgramResponse repose = response.body();
                 String msg = repose.getMessage();
                 boolean status = repose.isStatus();
                 switch (statusCode) {
@@ -358,17 +359,17 @@ public class GenerateReportFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ProgramRepose> call, Throwable t) {
+            public void onFailure(Call<ProgramResponse> call, Throwable t) {
                 hideProgressDialog();
                 Toast.makeText(getActivity(), "" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void loadPrograms(List<ProgramRepose.ProgramModel> programModels) {
+    private void loadPrograms(List<ProgramResponse.ProgramModel> programModels) {
         String[] subjects = new String[programModels.size()];
         int index = 0;
-        for (ProgramRepose.ProgramModel value : programModels) {
+        for (ProgramResponse.ProgramModel value : programModels) {
             subjects[index] = (String) value.getProgramName();
             index++;
         }

@@ -12,8 +12,9 @@ public class AttendanceReportResponse {
     @SerializedName("message")
     private String message;
 
-    @SerializedName("attedance")
-    List<ReportAttendanceModel> reportAttendanceModels ;
+    @SerializedName("attendance")
+    List<Reports> reportsList;
+
 
     public boolean isStatus() {
         return status;
@@ -23,7 +24,24 @@ public class AttendanceReportResponse {
         return message;
     }
 
-    public List<ReportAttendanceModel> getReportAttendanceModels() {
-        return reportAttendanceModels;
+    public List<Reports> getReportsList() {
+        return reportsList;
+    }
+
+    public static class Reports {
+
+        @SerializedName("date")
+        private String date;
+
+        @SerializedName("attendance_list")
+        List<ReportAttendanceModel> reportAttendanceModels ;
+
+        public List<ReportAttendanceModel> getReportAttendanceModels() {
+            return reportAttendanceModels;
+        }
+
+        public String getDate() {
+            return date;
+        }
     }
 }

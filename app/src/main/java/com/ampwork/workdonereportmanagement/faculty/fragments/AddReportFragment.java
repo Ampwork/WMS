@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ampwork.workdonereportmanagement.R;
 import com.ampwork.workdonereportmanagement.faculty.activities.AddNewReportActivity;
-import com.ampwork.workdonereportmanagement.faculty.activities.DailyReportsActivity;
 import com.ampwork.workdonereportmanagement.faculty.activities.ReportsMainActivity;
 import com.ampwork.workdonereportmanagement.faculty.adapter.ReportAdapter;
 import com.ampwork.workdonereportmanagement.model.ReportModel;

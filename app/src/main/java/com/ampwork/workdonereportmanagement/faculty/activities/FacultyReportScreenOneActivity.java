@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +21,15 @@ import com.ampwork.workdonereportmanagement.network.Api;
 import com.ampwork.workdonereportmanagement.network.ApiClient;
 import com.ampwork.workdonereportmanagement.utils.AppConstants;
 import com.ampwork.workdonereportmanagement.utils.PreferencesManager;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -39,7 +48,7 @@ public class FacultyReportScreenOneActivity extends AppCompatActivity implements
     String userId, semester, subject, fromDate, toDate, month;
     boolean isMonth = false;
     List<GenerateReportResponse.ReportResponseModel> reportResponseModelList;
-
+    List<GenerateReportResponse.WeeksModel> weeksModels = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,18 +159,31 @@ public class FacultyReportScreenOneActivity extends AppCompatActivity implements
             @Override
             public void onResponse(Call<GenerateReportResponse> call, Response<GenerateReportResponse> response) {
                 int statusCode = response.code();
-                GenerateReportResponse reportResponse = response.body();
-                String msg = reportResponse.getMessage();
-                boolean status = reportResponse.isStatus();
+
                 switch (statusCode) {
                     case 200:
                         hideProgressDialog();
+                        GenerateReportResponse reportResponse = response.body();
+                        String msg = reportResponse.getMessage();
+                        boolean status = reportResponse.isStatus();
                         if (status) {
                             if (msg.equals("Report Found")) {
                                 reportResponseModelList = reportResponse.getReportResponseModelList();
                                 reportAdapter = new FacultyReportAdapter(FacultyReportScreenOneActivity.this,
                                         reportResponseModelList, FacultyReportScreenOneActivity.this);
                                 recyclerView.setAdapter(reportAdapter);
+                                Log.e("weeks","...."+reportResponse.getWeeksModel());
+                                weeksModels = reportResponse.getWeeksModel();
+                                /*for (int i=0;i<weeksModels.size();i++)
+                                {
+                                    Log.e("week","........"+weeksModels.get(i).getWeeknumber());
+                                    Iterator<JsonElement> iterator = weeksModels.get(i).getJsonObject().iterator();
+                                    while(iterator.hasNext()) {
+                                        System.out.println(iterator.next());
+                                    }
+
+
+                                }*/
                             }
                         } else {
                             Toast.makeText(FacultyReportScreenOneActivity.this, "No Report Found", Toast.LENGTH_SHORT).show();
@@ -179,6 +201,7 @@ public class FacultyReportScreenOneActivity extends AppCompatActivity implements
             @Override
             public void onFailure(Call<GenerateReportResponse> call, Throwable t) {
                 hideProgressDialog();
+                Log.e("week","....."+t.getMessage());
                 Toast.makeText(FacultyReportScreenOneActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
@@ -213,6 +236,7 @@ public class FacultyReportScreenOneActivity extends AppCompatActivity implements
         intent.putExtra("subject", subject);
         intent.putExtra("month", month);
         intent.putExtra("list", (Parcelable) reportModel);
+        intent.putExtra("weeks", (Serializable) weeksModels);
         startActivity(intent);
     }
 }

@@ -1,0 +1,51 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/cardview_compat_inset_shadow"
+    android:layout_marginEnd="@dimen/cardview_compat_inset_shadow"
+    android:layout_marginBottom="@dimen/cardview_compat_inset_shadow"
+    android:outlineAmbientShadowColor="@color/latestBlue"
+    android:outlineSpotShadowColor="@color/latestBlue"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+
+
+        <LinearLayout
+            android:id="@+id/ll"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+
+            <TextView
+                android:id="@+id/programTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_regular"
+                android:padding="4dp"
+                android:layout_weight="0.8"
+                android:text="BSC"
+                android:textColor="@color/blackToWhite"
+                android:textSize="14sp" />
+
+            <ImageButton
+                android:id="@+id/updateBtn"
+                style="?android:attr/actionOverflowButtonStyle"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_weight="0.2" />
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

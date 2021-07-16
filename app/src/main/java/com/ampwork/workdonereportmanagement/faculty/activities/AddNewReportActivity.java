@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.ampwork.workdonereportmanagement.R;
-import com.ampwork.workdonereportmanagement.model.ProgramRepose;
+import com.ampwork.workdonereportmanagement.model.ProgramResponse;
 import com.ampwork.workdonereportmanagement.model.ReportModel;
 import com.ampwork.workdonereportmanagement.model.ReportResponse;
 import com.ampwork.workdonereportmanagement.model.UserInfo;
@@ -51,7 +51,7 @@ public class AddNewReportActivity extends AppCompatActivity {
     PreferencesManager preferencesManager;
     String userId, userFullName, fName, lName, co_id, sup_id;
     ProgressDialog progressDialog;
-    List<ProgramRepose.ProgramModel> programModels = new ArrayList<>();
+    List<ProgramResponse.ProgramModel> programModels = new ArrayList<>();
     String[] months = {"January", "February", "March", "April", "May", "June", "July", "August",
             "September", "October", "November", "December"};
     String[] years = {"2021", "2022", "2023", "2024", "2025"};
@@ -252,12 +252,12 @@ public class AddNewReportActivity extends AppCompatActivity {
 
     private void getProgramList() {
         showProgressDialog("Please wait...");
-        Call<ProgramRepose> call = api.getPrograms();
-        call.enqueue(new Callback<ProgramRepose>() {
+        Call<ProgramResponse> call = api.getPrograms();
+        call.enqueue(new Callback<ProgramResponse>() {
             @Override
-            public void onResponse(Call<ProgramRepose> call, Response<ProgramRepose> response) {
+            public void onResponse(Call<ProgramResponse> call, Response<ProgramResponse> response) {
                 int statusCode = response.code();
-                ProgramRepose repose = response.body();
+                ProgramResponse repose = response.body();
                 String msg = repose.getMessage();
                 boolean status = repose.isStatus();
                 switch (statusCode) {
@@ -285,7 +285,7 @@ public class AddNewReportActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ProgramRepose> call, Throwable t) {
+            public void onFailure(Call<ProgramResponse> call, Throwable t) {
                 hideProgressDialog();
                 Toast.makeText(AddNewReportActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -382,10 +382,10 @@ public class AddNewReportActivity extends AppCompatActivity {
 
     }
 
-    private void loadPrograms(List<ProgramRepose.ProgramModel> programModels) {
+    private void loadPrograms(List<ProgramResponse.ProgramModel> programModels) {
         String[] subjects = new String[programModels.size()];
         int index = 0;
-        for (ProgramRepose.ProgramModel value : programModels) {
+        for (ProgramResponse.ProgramModel value : programModels) {
             subjects[index] = (String) value.getProgramName();
             index++;
         }
