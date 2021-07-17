@@ -1,5 +1,6 @@
 package com.ampwork.workdonereportmanagement.faculty.activities;
 
+import android.app.Person;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +34,7 @@ import com.ampwork.workdonereportmanagement.model.AddReportModel;
 import com.ampwork.workdonereportmanagement.model.ApiResponse;
 import com.ampwork.workdonereportmanagement.model.GenerateReportResponse;
 import com.ampwork.workdonereportmanagement.model.ReportResponse;
+import com.ampwork.workdonereportmanagement.model.WeeksModel;
 import com.ampwork.workdonereportmanagement.network.Api;
 import com.ampwork.workdonereportmanagement.network.ApiClient;
 import com.ampwork.workdonereportmanagement.utils.AppConstants;
@@ -40,6 +42,8 @@ import com.ampwork.workdonereportmanagement.utils.AppUtility;
 import com.ampwork.workdonereportmanagement.utils.PreferencesManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -57,6 +61,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,6 +70,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -78,6 +84,8 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.ampwork.workdonereportmanagement.faculty.activities.FacultyReportScreenOneActivity.weeksModels;
 
 public class FacultyReportScreenTwoActivity extends AppCompatActivity {
 
@@ -95,7 +103,7 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
 
     GenerateReportResponse.ReportResponseModel reportResponseModel;
     List<AddReportModel> addReportModels;
-    List<GenerateReportResponse.WeeksModel> weeksModels;
+
     List<GenerateReportResponse.ReportSubject> reportSubjects;
     File filePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/report.xlsx");
 
@@ -106,7 +114,7 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
 
     private static final String[] paper_titles = {"Paper Code", "Paper Title", "% of Syllabus Covered in this month", "Cumulative Syllbus Covered"};
 
-    int totalDaysOfMonth, totalNumberOfWeeks;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,17 +156,23 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
         if (isMonth) {
 
 
+
+
+
+
+
+
             semester = getIntent().getExtras().getString("semester");
             subject = getIntent().getExtras().getString("subject");
             month = getIntent().getExtras().getString("month");
             reportSubjects = reportResponseModel.getReportSubjects();
 
-            totalDaysOfMonth = AppUtility.checkMonth(month);
+
             int value = AppUtility.checkMonthValue(month);
             int year = Integer.parseInt(reportResponseModel.getYear());
-            totalNumberOfWeeks = AppUtility.getNumberOfWeeks(year, value);
 
-            Log.e("days", "1......." + totalNumberOfWeeks);
+
+            Log.e("days", "1......." + weeksModels.toString());
 
         } else {
             semester = getIntent().getExtras().getString("semester");
@@ -442,129 +456,77 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
 
             //set data
             int rowCount = 9;
-            int monthValue = AppUtility.checkMonthValue(month);
-
-
-
-
-
-
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.MONTH, monthValue - 1);
-            cal.set(Calendar.DAY_OF_MONTH, 1);
-            int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            int totalCounts = 0;
 
             for (int i=0;i<weeksModels.size();i++)
             {
-                Row row = sheet.createRow(rowCount++);
-                writeBook(row, wb);
-                Cell cell = row.createCell(3);
+
+                if (!weeksModels.get(i).getWeeknumber().equals("1")){
 
 
-                Log.e("week","........"+weeksModels.get(i).getWeeknumber());
-                Iterator<JsonElement> iterator = weeksModels.get(i).getJsonObject().iterator();
-                while(iterator.hasNext()) {
-                    System.out.println(iterator.next());
 
-                    row.setHeightInPoints(20);
-                    cell.setCellValue(iterator.next().toString());
-                    cell.setCellStyle(styles.get("cell"));
+                    totalCounts++;
                 }
 
-                row.setHeightInPoints(20);
-                cell.setCellStyle(styles.get("cell"));
-                sheet.addMergedRegion(new CellRangeAddress(rowCount, rowCount, 3, 9));
-            }
+                int totalTheoryHour=0;
+                int totalPracticalHour=0;
+                int totalProjectHour=0;
+                int totalFwHour=0;
+                int totalHour=0;
+                for (JsonElement jsonElement : weeksModels.get(i).getJsonObject()) {
 
-            /*for (int i = 1; i < maxDay; i++) {
-                cal.set(Calendar.DAY_OF_MONTH, i);
-                String dateStr = df.format(cal.getTime());
-                Row row = sheet.createRow(rowCount++);
-                writeBook(row, wb);
+                    String dateStr = jsonElement.getAsString();
+                    Log.e("daTE", "........" + dateStr);
 
+                    Row row1 = sheet.createRow(rowCount++);
+                    Cell cell1 = row1.createCell(3);
+                    row1.setHeightInPoints(20);
+                    cell1.setCellValue(dateStr);
 
-                Cell cell = row.createCell(3);
-                row.setHeightInPoints(20);
-                cell.setCellValue(dateStr);
-                cell.setCellStyle(styles.get("cell"));
+                    cell1.setCellStyle(styles.get("cell"));
+                    for (AddReportModel aBook : addReportModels)
+                    {
+                        writeBook(row1, wb,aBook,dateStr,cell1);
 
-                for (AddReportModel aBook : addReportModels) {
-                    if (aBook.getDate().equals(dateStr)) {
-                        cell = row.createCell(4);
-                        row.setHeightInPoints(20);
-                        cell.setCellValue(aBook.getSemester());
-                        cell.setCellStyle(styles.get("cell"));
+                        if (aBook.getType().equals("Theory(T)") && aBook.getDate().equals(dateStr))
+                        {
+                            totalTheoryHour = totalTheoryHour+Integer.parseInt(aBook.getNo_of_hours());
+                        }else if (aBook.getType().equals("Practical(P)") && aBook.getDate().equals(dateStr)){
+                            totalPracticalHour = totalPracticalHour+Integer.parseInt(aBook.getNo_of_hours());
+                        }else if (aBook.getType().equals("Project work(PW)") && aBook.getDate().equals(dateStr)) {
+                            totalProjectHour = totalProjectHour+Integer.parseInt(aBook.getNo_of_hours());
+                        }else if (aBook.getType().equals("Field work(FW)") && aBook.getDate().equals(dateStr)){
+                            totalFwHour = totalFwHour+Integer.parseInt(aBook.getNo_of_hours());
+                        }
 
-
-                        cell = row.createCell(5);
-                        row.setHeightInPoints(20);
-                        cell.setCellValue(aBook.getFrom_time());
-                        cell.setCellStyle(styles.get("cell"));
-
-
-                        cell = row.createCell(6);
-                        row.setHeightInPoints(20);
-                        cell.setCellValue(aBook.getTo_time());
-                        cell.setCellStyle(styles.get("cell"));
-
-
-                        cell = row.createCell(7);
-                        row.setHeightInPoints(20);
-                        cell.setCellValue(aBook.getType());
-                        cell.setCellStyle(styles.get("cell"));
-
-
-                        cell = row.createCell(8);
-                        row.setHeightInPoints(20);
-                        cell.setCellValue(aBook.getNo_of_hours());
-                        cell.setCellStyle(styles.get("cell"));
-
-
-                        cell = row.createCell(9);
-                        row.setHeightInPoints(20);
-                        cell.setCellValue(aBook.getDescription());
-                        cell.setCellStyle(styles.get("cell"));
-                    } else {
-                        cell = row.createCell(4);
-                        row.setHeightInPoints(20);
-                        // cell.setCellValue(aBook.getSemester());
-                        cell.setCellStyle(styles.get("cell"));
-
-                        cell = row.createCell(5);
-                        row.setHeightInPoints(20);
-                        //cell.setCellValue(aBook.getFrom_time());
-                        cell.setCellStyle(styles.get("cell"));
-
-
-                        cell = row.createCell(6);
-                        row.setHeightInPoints(20);
-                        //cell.setCellValue(aBook.getTo_time());
-                        cell.setCellStyle(styles.get("cell"));
-
-
-                        cell = row.createCell(7);
-                        row.setHeightInPoints(20);
-                        //cell.setCellValue(aBook.getType());
-                        cell.setCellStyle(styles.get("cell"));
-
-
-                        cell = row.createCell(8);
-                        row.setHeightInPoints(20);
-                        //cell.setCellValue(aBook.getNo_of_hours());
-                        cell.setCellStyle(styles.get("cell"));
-
-
-                        cell = row.createCell(9);
-                        row.setHeightInPoints(20);
-                        // cell.setCellValue(aBook.getDescription());
-                        cell.setCellStyle(styles.get("cell"));
                     }
 
+
+                    totalCounts++;
                 }
+                totalHour = totalTheoryHour+totalPracticalHour+totalProjectHour+totalFwHour;
+                Log.e("total","t......."+totalTheoryHour);
+                Log.e("total","p......."+totalPracticalHour);
+                Log.e("total","pw......."+totalProjectHour);
+                Log.e("total","fw......."+totalFwHour);
+                Log.e("total","......."+totalHour);
+                Row row = sheet.createRow(rowCount++);
+                Cell cell = row.createCell(3);
+                row.setHeightInPoints(20);
+                cell.setCellStyle(styles.get("cell"));
+                cell.setCellValue("Total Number of Hours in Week= (Theory:---"+totalTheoryHour+" hours," +
+                        " Practical:---"+totalPracticalHour+ "hours," +
+                        "Field Work:--"+totalFwHour+"hours," +
+                        " Project Work:---"+totalProjectHour+"hours." +"Total hours:---"+totalHour+")");
+                sheet.addMergedRegion(new CellRangeAddress(rowCount-1, rowCount-1, 3, 9));
 
+                totalTheoryHour=0;
+                totalPracticalHour=0;
+                totalFwHour=0;
+                totalProjectHour=0;
+                totalHour=0;
+            }
 
-            }*/
 
             for (int i = 3; i < 8; i++) {
                 sheet.setColumnWidth(i, 15 * 256);  //15 characters wide
@@ -573,7 +535,7 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
             sheet.setColumnWidth(9, 50 * 256);
 
             //row leaves
-            int rowIndex = 9 + totalDaysOfMonth + 1;
+            int rowIndex = 9 + totalCounts + 1;
 
             //paper allotted header
             Row paperAlloted = sheet.createRow(rowIndex);
@@ -685,7 +647,7 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
             int rowCount = 9;
             for (AddReportModel aBook : addReportModels) {
                 Row row = sheet.createRow(rowCount++);
-                // writeBook(aBook, row, wb);
+                 writeCustomBook(aBook, row, wb);
             }
             for (int i = 3; i < 8; i++) {
                 sheet.setColumnWidth(i, 15 * 256);  //15 characters wide
@@ -778,6 +740,50 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
         }
     }
 
+    private void writeCustomBook(AddReportModel aBook, Row row, Workbook wb) {
+        Map<String, CellStyle> styles = createStyles(wb);
+
+        Cell cell = row.createCell(3);
+        row.setHeightInPoints(20);
+         cell.setCellValue(aBook.getDate());
+        cell.setCellStyle(styles.get("cell"));
+
+        cell = row.createCell(4);
+        row.setHeightInPoints(20);
+         cell.setCellValue(aBook.getSemester());
+        cell.setCellStyle(styles.get("cell"));
+
+        cell = row.createCell(5);
+        row.setHeightInPoints(20);
+         cell.setCellValue(aBook.getFrom_time());
+        cell.setCellStyle(styles.get("cell"));
+
+
+        cell = row.createCell(6);
+        row.setHeightInPoints(20);
+        cell.setCellValue(aBook.getTo_time());
+        cell.setCellStyle(styles.get("cell"));
+
+
+        cell = row.createCell(7);
+        row.setHeightInPoints(20);
+        cell.setCellValue(aBook.getType());
+        cell.setCellStyle(styles.get("cell"));
+
+
+        cell = row.createCell(8);
+        row.setHeightInPoints(20);
+        cell.setCellValue(aBook.getNo_of_hours());
+        cell.setCellStyle(styles.get("cell"));
+
+
+        cell = row.createCell(9);
+        row.setHeightInPoints(20);
+        cell.setCellValue(aBook.getDescription());
+        cell.setCellStyle(styles.get("cell"));
+
+    }
+
 
     private void showDialogUser() {
         hideProgressDialog();
@@ -794,48 +800,78 @@ public class FacultyReportScreenTwoActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void writeBook(Row row, Workbook wb) {
+    private void writeBook(Row row, Workbook wb, AddReportModel aBook, String dateStr, Cell cell) {
 
         Map<String, CellStyle> styles = createStyles(wb);
 
-        Cell cell = row.createCell(3);
-        row.setHeightInPoints(20);
-        //cell.setCellValue(aBook.getDate());
-        cell.setCellStyle(styles.get("cell"));
 
-        cell = row.createCell(4);
-        row.setHeightInPoints(20);
-        // cell.setCellValue(aBook.getSemester());
-        cell.setCellStyle(styles.get("cell"));
+        Log.e("date","....."+aBook.getDate()+","+dateStr);
 
-        cell = row.createCell(5);
-        row.setHeightInPoints(20);
-        // cell.setCellValue(aBook.getFrom_time());
-        cell.setCellStyle(styles.get("cell"));
+        if (aBook.getDate().equals(dateStr))
+        {
+            Log.e("date","match ....."+aBook.getDate()+","+dateStr);
+            cell = row.createCell(4);
+            row.setHeightInPoints(20);
+            cell.setCellValue(aBook.getSemester());
+            cell.setCellStyle(styles.get("cell"));
 
-
-        cell = row.createCell(6);
-        row.setHeightInPoints(20);
-        //  cell.setCellValue(aBook.getTo_time());
-        cell.setCellStyle(styles.get("cell"));
+            cell = row.createCell(5);
+            row.setHeightInPoints(20);
+            cell.setCellValue(aBook.getFrom_time());
+            cell.setCellStyle(styles.get("cell"));
 
 
-        cell = row.createCell(7);
-        row.setHeightInPoints(20);
-        // cell.setCellValue(aBook.getType());
-        cell.setCellStyle(styles.get("cell"));
+            cell = row.createCell(6);
+            row.setHeightInPoints(20);
+            cell.setCellValue(aBook.getTo_time());
+            cell.setCellStyle(styles.get("cell"));
 
 
-        cell = row.createCell(8);
-        row.setHeightInPoints(20);
-        //  cell.setCellValue(aBook.getNo_of_hours());
-        cell.setCellStyle(styles.get("cell"));
+            cell = row.createCell(7);
+            row.setHeightInPoints(20);
+            cell.setCellValue(aBook.getType());
+            cell.setCellStyle(styles.get("cell"));
 
 
-        cell = row.createCell(9);
-        row.setHeightInPoints(20);
-        // cell.setCellValue(aBook.getDescription());
-        cell.setCellStyle(styles.get("cell"));
+            cell = row.createCell(8);
+            row.setHeightInPoints(20);
+            cell.setCellValue(aBook.getNo_of_hours());
+            cell.setCellStyle(styles.get("cell"));
+
+
+            cell = row.createCell(9);
+            row.setHeightInPoints(20);
+            cell.setCellValue(aBook.getDescription());
+            cell.setCellStyle(styles.get("cell"));
+        }else {
+
+
+            cell = row.createCell(4);
+            row.setHeightInPoints(20);
+            cell.setCellStyle(styles.get("cell"));
+
+            cell = row.createCell(5);
+            row.setHeightInPoints(20);
+            cell.setCellStyle(styles.get("cell"));
+
+            cell = row.createCell(6);
+            row.setHeightInPoints(20);
+            cell.setCellStyle(styles.get("cell"));
+
+            cell = row.createCell(7);
+            row.setHeightInPoints(20);
+            cell.setCellStyle(styles.get("cell"));
+
+            cell = row.createCell(8);
+            row.setHeightInPoints(20);
+            cell.setCellStyle(styles.get("cell"));
+
+            cell = row.createCell(9);
+            row.setHeightInPoints(20);
+            cell.setCellStyle(styles.get("cell"));
+
+        }
+
 
 
     }

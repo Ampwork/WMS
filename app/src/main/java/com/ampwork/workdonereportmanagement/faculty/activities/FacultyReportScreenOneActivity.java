@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ampwork.workdonereportmanagement.R;
 import com.ampwork.workdonereportmanagement.faculty.adapter.FacultyReportAdapter;
 import com.ampwork.workdonereportmanagement.model.GenerateReportResponse;
+import com.ampwork.workdonereportmanagement.model.WeeksModel;
 import com.ampwork.workdonereportmanagement.network.Api;
 import com.ampwork.workdonereportmanagement.network.ApiClient;
 import com.ampwork.workdonereportmanagement.utils.AppConstants;
@@ -46,9 +47,10 @@ public class FacultyReportScreenOneActivity extends AppCompatActivity implements
     Api api;
     FacultyReportAdapter reportAdapter;
     String userId, semester, subject, fromDate, toDate, month;
+    int year;
     boolean isMonth = false;
     List<GenerateReportResponse.ReportResponseModel> reportResponseModelList;
-    List<GenerateReportResponse.WeeksModel> weeksModels = new ArrayList<>();
+    public  static List<WeeksModel> weeksModels = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +73,7 @@ public class FacultyReportScreenOneActivity extends AppCompatActivity implements
             semester = getIntent().getExtras().getString("semester");
             subject = getIntent().getExtras().getString("subject");
             month = getIntent().getExtras().getString("month");
+            year = Integer.parseInt(getIntent().getExtras().getString("year"));
         } else {
             semester = getIntent().getExtras().getString("semester");
             subject = getIntent().getExtras().getString("subject");
@@ -153,7 +156,7 @@ public class FacultyReportScreenOneActivity extends AppCompatActivity implements
 
     private void getMonthlyReport() {
         showProgressDialog("Getting reports please wait...");
-        GenerateReportResponse request = new GenerateReportResponse(userId, semester, subject, month);
+        GenerateReportResponse request = new GenerateReportResponse(userId, semester, subject, month,year);
         Call<GenerateReportResponse> call = api.generateMonthlyReport(request);
         call.enqueue(new Callback<GenerateReportResponse>() {
             @Override
@@ -174,16 +177,18 @@ public class FacultyReportScreenOneActivity extends AppCompatActivity implements
                                 recyclerView.setAdapter(reportAdapter);
                                 Log.e("weeks","...."+reportResponse.getWeeksModel());
                                 weeksModels = reportResponse.getWeeksModel();
-                                /*for (int i=0;i<weeksModels.size();i++)
+                                for (int i=0;i<weeksModels.size();i++)
                                 {
                                     Log.e("week","........"+weeksModels.get(i).getWeeknumber());
                                     Iterator<JsonElement> iterator = weeksModels.get(i).getJsonObject().iterator();
                                     while(iterator.hasNext()) {
-                                        System.out.println(iterator.next());
+
+                                        String dateStr = iterator.next().getAsString();
+                                        System.out.println(dateStr);
                                     }
 
 
-                                }*/
+                                }
                             }
                         } else {
                             Toast.makeText(FacultyReportScreenOneActivity.this, "No Report Found", Toast.LENGTH_SHORT).show();
@@ -236,7 +241,6 @@ public class FacultyReportScreenOneActivity extends AppCompatActivity implements
         intent.putExtra("subject", subject);
         intent.putExtra("month", month);
         intent.putExtra("list", (Parcelable) reportModel);
-        intent.putExtra("weeks", (Serializable) weeksModels);
         startActivity(intent);
     }
 }

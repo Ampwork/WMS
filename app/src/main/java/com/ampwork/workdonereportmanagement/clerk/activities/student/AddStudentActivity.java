@@ -342,6 +342,7 @@ public class AddStudentActivity extends AppCompatActivity {
         materialDateBuilder.setTitleText("Select DOB");
         MaterialDatePicker materialDatePicker = materialDateBuilder.build();
 
+
         dobTextInputLayout.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

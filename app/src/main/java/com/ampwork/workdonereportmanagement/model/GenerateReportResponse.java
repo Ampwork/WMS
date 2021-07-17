@@ -32,6 +32,9 @@ public class GenerateReportResponse {
     @SerializedName("month")
     private String month;
 
+    @SerializedName("year")
+    private String year;
+
     public GenerateReportResponse(String userid, String semester, String subject, String fromDate, String toDate) {
         this.userid = userid;
         this.semester = semester;
@@ -40,11 +43,12 @@ public class GenerateReportResponse {
         this.toDate = toDate;
     }
 
-    public GenerateReportResponse(String userid, String semester, String subject, String month) {
+    public GenerateReportResponse(String userid, String semester, String subject, String month,int year) {
         this.userid = userid;
         this.semester = semester;
         this.subject = subject;
         this.month = month;
+        this.year = String.valueOf(year);
     }
 
     @SerializedName("status")
@@ -327,21 +331,5 @@ public class GenerateReportResponse {
         }
     }
 
-    public static class WeeksModel implements Serializable {
-        @SerializedName("weeknumber")
-        String weeknumber;
 
-        @SerializedName("dates")
-        JsonArray jsonObject;
-
-
-        public String getWeeknumber() {
-            return weeknumber;
-        }
-
-        public JsonArray getJsonObject() {
-            return jsonObject;
-        }
-
-    }
 }

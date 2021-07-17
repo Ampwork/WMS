@@ -63,12 +63,12 @@ public class GenerateReportFragment extends Fragment {
     private RadioGroup radioGroup;
     private RadioButton monthlyRadioBtn, customRadioBtn;
     TextInputLayout programTextInputLayout, semesterTextInputLayout, subjectTextInputLayout,
-            fromDateTextInputLayout, toDateTextInputLayout, monthlyTextInputLayout;
+            fromDateTextInputLayout, toDateTextInputLayout, monthlyTextInputLayout,yearTextInputLayout;
     TextInputEditText edFromDate, edToDate;
-    AutoCompleteTextView autoTvSem, autoTvSubject, autoTvProgram, autoTvMonth;
+    AutoCompleteTextView autoTvSem, autoTvSubject, autoTvProgram, autoTvMonth,autoTvYear;
     MaterialButton reportBtn;
     ConstraintLayout parentLayout;
-    LinearLayout dateRangeLayout;
+    LinearLayout dateRangeLayout,monthYearLayout;
 
     PreferencesManager preferencesManager;
     Api api;
@@ -79,7 +79,7 @@ public class GenerateReportFragment extends Fragment {
 
     String[] months = {"January", "February", "March", "April", "May", "June", "July", "August",
             "September", "October", "November", "December"};
-    String[] years = {"2021", "2022", "2023", "2024", "2025"};
+    String[] years = {"2021", "2022", "2023", "2024", "2025","2026","2027","2028","2029","2030"};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -112,6 +112,7 @@ public class GenerateReportFragment extends Fragment {
 
         parentLayout = root.findViewById(R.id.cl1);
         dateRangeLayout = root.findViewById(R.id.ll1);
+        monthYearLayout = root.findViewById(R.id.llMonth);
         radioGroup = root.findViewById(R.id.radioGrp);
         monthlyRadioBtn = root.findViewById(R.id.monthRadio);
         customRadioBtn = root.findViewById(R.id.customRadio);
@@ -128,6 +129,9 @@ public class GenerateReportFragment extends Fragment {
         toDateTextInputLayout = root.findViewById(R.id.toDateInputLayout);
         monthlyTextInputLayout = root.findViewById(R.id.monthInputLayout);
         autoTvMonth = root.findViewById(R.id.monthAutoComTv);
+
+        yearTextInputLayout = root.findViewById(R.id.yearInputLayout);
+        autoTvYear = root.findViewById(R.id.yearAutoComTv);
 
         edToDate = root.findViewById(R.id.toDateEdt);
         reportBtn = root.findViewById(R.id.btnReport);
@@ -307,17 +311,17 @@ public class GenerateReportFragment extends Fragment {
                     isMonth = true;
                     parentLayout.setVisibility(View.VISIBLE);
                     dateRangeLayout.setVisibility(View.GONE);
-                    monthlyTextInputLayout.setVisibility(View.VISIBLE);
+                    monthYearLayout.setVisibility(View.VISIBLE);
 
                 } else if (checkedId == R.id.customRadio) {
                     isMonth = false;
                     parentLayout.setVisibility(View.VISIBLE);
                     dateRangeLayout.setVisibility(View.VISIBLE);
-                    monthlyTextInputLayout.setVisibility(View.GONE);
+                    monthYearLayout.setVisibility(View.GONE);
                 } else {
                     parentLayout.setVisibility(View.GONE);
                     dateRangeLayout.setVisibility(View.GONE);
-                    monthlyTextInputLayout.setVisibility(View.GONE);
+                    monthYearLayout.setVisibility(View.GONE);
                 }
 
             }
@@ -379,6 +383,9 @@ public class GenerateReportFragment extends Fragment {
 
         ArrayAdapter month_adapter = new ArrayAdapter(getActivity(), R.layout.list_item, months);
         autoTvMonth.setAdapter(month_adapter);
+
+        ArrayAdapter year_adapter = new ArrayAdapter(getActivity(), R.layout.list_item, years);
+        autoTvYear.setAdapter(year_adapter);
     }
 
     private void getSubjectList(String program) {
@@ -527,7 +534,7 @@ public class GenerateReportFragment extends Fragment {
         String fromDate = edFromDate.getText().toString();
         String toDate = edToDate.getText().toString();
         String month = autoTvMonth.getText().toString();
-
+        String year = autoTvYear.getText().toString();
 
         if (TextUtils.isEmpty(program) || program.equals("Select")) {
             programTextInputLayout.setError(getResources().getString(R.string.program_error_txt));
@@ -539,13 +546,17 @@ public class GenerateReportFragment extends Fragment {
             if (isMonth) {
                 if (TextUtils.isEmpty(month) || month.equals("Select")) {
                     monthlyTextInputLayout.setError(getResources().getString(R.string.month_error_txt));
-                } else {
+                }else if (TextUtils.isEmpty(year) || year.equals("Select")){
+                    yearTextInputLayout.setError(getResources().getString(R.string.year_error_txt));
+                }
+                else {
                     isMonth = true;
                     Intent intent = new Intent(getActivity(), FacultyReportScreenOneActivity.class);
                     intent.putExtra("isMonth", isMonth);
                     intent.putExtra("semester", semester);
                     intent.putExtra("subject", subject);
                     intent.putExtra("month", month);
+                    intent.putExtra("year", year);
                     startActivity(intent);
                 }
             } else {
@@ -614,6 +625,7 @@ public class GenerateReportFragment extends Fragment {
         autoTvSem.setText("Select");
         autoTvSubject.setText("Select");
         autoTvMonth.setText("Select");
+        autoTvYear.setText("Select");
         edFromDate.getText().clear();
         edToDate.getText().clear();
 
